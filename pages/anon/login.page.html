@@ -1,0 +1,29 @@
+{# /login — Forge CRM sign-in. Self-contained anon page: a glass card on a
+   themed backdrop, posting to the platform auth endpoint /api/v1/auth/login.
+   Identity, sessions, and the providers (password / passkey / oauth) are the
+   substrate's — this is just the UI. #}
+<div class="lg">
+  <main class="lg__main">
+    <a class="lg__wm" href="/login">FORGE<span class="period">.</span> <span class="lg__sub">CRM</span></a>
+    <div class="lg__card">
+      <header class="lg__head">
+        <h1>Welcome back<span class="period">.</span></h1>
+        <p>Sign in to your CRM.</p>
+      </header>
+      {% if props.params.error %}<div class="lg__error">That didn't work — check your email and password and try again.</div>{% endif %}
+      <form class="lg__form" method="post" action="/api/v1/auth/login" accept-charset="utf-8" hx-boost="false">
+        <div class="lg__field">
+          <label for="email">Email</label>
+          <input id="email" type="email" name="lookup_value" autocomplete="username" placeholder="name@company.com" required autofocus>
+        </div>
+        <div class="lg__field">
+          <label for="pw">Password</label>
+          <input id="pw" type="password" name="password" autocomplete="current-password" placeholder="••••••••••" required>
+        </div>
+        <label class="lg__stay"><input type="checkbox" name="stay" value="true" checked> Stay signed in</label>
+        <button class="lg__btn" type="submit">Sign in <span class="arrow">→</span></button>
+      </form>
+    </div>
+    <p class="lg__foot">Owned, on Forge.</p>
+  </main>
+</div>

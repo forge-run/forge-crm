@@ -78,9 +78,10 @@ mod component_export {
         }
     }
 
-    // Bounced/forbidden requests land on the dashboard with an error banner.
+    // Unauthenticated / forbidden requests land on the sign-in page (NOT /app,
+    // which would loop for an anon caller).
     const DISPATCH_CONFIG: forge_web::DispatchConfig =
-        forge_web::DispatchConfig::new().with_forbidden_redirect("/app?error=forbidden");
+        forge_web::DispatchConfig::new().with_forbidden_redirect("/login");
 
     fn dispatch(ctx: &OpContext, input: &Value) -> Result<Response, String> {
         forge_web::dispatch_with(ctx, input, DISPATCH_CONFIG)
