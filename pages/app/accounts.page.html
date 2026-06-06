@@ -1,0 +1,28 @@
+{# /app/accounts — accounts worklist with search. #}
+{% set rows = props.data.list.rows %}
+{% set body %}
+<div class="op">
+  <form class="op-toolbar" method="get" action="/app/accounts" hx-boost="true">
+    <input class="op-search" type="search" name="q" value="{{ props.params.q | default('') }}" placeholder="Search accounts by name…">
+    <span class="op-count">{{ props.data.list.total }} {{ "account" if props.data.list.total == 1 else "accounts" }}</span>
+  </form>
+  {% if rows %}
+  <table class="op-table">
+    <thead><tr><th>Account</th><th>Type</th><th>Industry</th><th class="op-num">Employees</th></tr></thead>
+    <tbody>
+      {% for a in rows %}
+      <tr>
+        <td><a class="op-rowlink" href="/app/accounts/{{ a.id }}">{{ a.name }}</a>{% if a.domain %}<div class="op-muted">{{ a.domain }}</div>{% endif %}</td>
+        <td>{% if a.type %}<span class="pill pill--{{ a.type }}">{{ a.type }}</span>{% else %}<span class="op-muted">—</span>{% endif %}</td>
+        <td class="op-muted">{{ a.industry | default("—") }}</td>
+        <td class="op-num op-muted">{{ a.employee_count | default("—") }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="op-empty"><strong>No accounts yet.</strong> Add your first company, or convert a qualified lead and one is created for you.</div>
+  {% endif %}
+</div>
+{% endset %}
+{{ component("crm_shell", {"active": "accounts", "title": "Accounts", "action_href": "/app/accounts/new", "action_label": "New account"}, {"body": body}) }}

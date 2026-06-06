@@ -1,0 +1,48 @@
+{# /app/leads — the qualification inbox. A worklist of open leads with status
+   filter chips; each row links to the lead and offers convert/qualify actions.
+   Mutations (convert_lead / update_lead) post to the crm op endpoint — confirm
+   the exact op-invocation path against your runtime (see CONTRIBUTING). #}
+{% set rows = props.data.list.rows %}
+{% set status = props.params.status %}
+
+{% set body %}
+<div class="op">
+  <div class="op-toolbar">
+    <div class="op-chips">
+      <a class="op-chip{% if not status %} is-active{% endif %}" href="/app/leads">All open</a>
+      <a class="op-chip{% if status == 'new' %} is-active{% endif %}" href="/app/leads?status=new">New</a>
+      <a class="op-chip{% if status == 'working' %} is-active{% endif %}" href="/app/leads?status=working">Working</a>
+      <a class="op-chip{% if status == 'qualified' %} is-active{% endif %}" href="/app/leads?status=qualified">Qualified</a>
+    </div>
+    <span class="op-count">{{ props.data.list.total }} {{ "lead" if props.data.list.total == 1 else "leads" }}</span>
+  </div>
+
+  {% if rows %}
+  <table class="op-table">
+    <thead><tr><th>Name</th><th>Company</th><th>Status</th><th>Rating</th><th>Source</th><th></th></tr></thead>
+    <tbody>
+      {% for l in rows %}
+      <tr>
+        <td><a class="op-rowlink" href="/app/leads/{{ l.id }}">{{ l.first_name }} {{ l.last_name }}</a><div class="op-muted">{{ l.email }}</div></td>
+        <td class="op-muted">{{ l.company | default("—") }}</td>
+        <td><span class="pill pill--{{ l.status }}">{{ l.status }}</span></td>
+        <td>{% if l.rating %}<span class="pill pill--{{ l.rating }}">{{ l.rating }}</span>{% else %}<span class="op-muted">—</span>{% endif %}</td>
+        <td class="op-muted">{{ l.source | default("—") }}</td>
+        <td style="text-align:right">
+          <form method="post" action="/api/v1/crm/convert_lead" hx-boost="false" style="display:inline">
+            <input type="hidden" name="id" value="{{ l.id }}">
+            <input type="hidden" name="create_opportunity" value="true">
+            <button class="crm-btn crm-btn--ghost" type="submit">Convert →</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="op-empty"><strong>Inbox zero.</strong> No open leads in this view. New leads land here from your web forms, imports, or an agent working your top-of-funnel.</div>
+  {% endif %}
+</div>
+{% endset %}
+
+{{ component("crm_shell", {"active": "leads", "title": "Leads", "action_href": "/app/leads/new", "action_label": "New lead"}, {"body": body}) }}

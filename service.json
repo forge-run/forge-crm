@@ -124,6 +124,76 @@
           "idempotency": "none",
           "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "create_opportunity": { "type": "boolean" } }, "required": ["id"] },
           "output_schema": { "type": "object", "properties": { "contact_id": { "type": "string" }, "account_id": { "type": "string" }, "opportunity_id": { "type": "string" } } }
+        },
+        {
+          "name": "get_account",
+          "kind": "query",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] },
+          "output_schema": { "type": "object", "properties": { "account": { "type": "object" }, "contacts": { "type": "array", "items": { "type": "object" } }, "opportunities": { "type": "array", "items": { "type": "object" } }, "activities": { "type": "array", "items": { "type": "object" } } } }
+        },
+        {
+          "name": "get_opportunity",
+          "kind": "query",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] },
+          "output_schema": { "type": "object", "properties": { "opportunity": { "type": "object" }, "account": { "type": "object" }, "stages": { "type": "array", "items": { "type": "object" } }, "activities": { "type": "array", "items": { "type": "object" } } } }
+        },
+        {
+          "name": "list_opportunities",
+          "kind": "query",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "status": { "type": "string" }, "owner": { "type": "string" } } },
+          "output_schema": { "type": "object", "properties": { "rows": { "type": "array", "items": { "type": "object" } }, "total": { "type": "integer" } } }
+        },
+        {
+          "name": "my_work",
+          "kind": "query",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "owner_id": { "type": "string" } } },
+          "output_schema": { "type": "object", "properties": { "overdue": { "type": "array", "items": { "type": "object" } }, "today": { "type": "array", "items": { "type": "object" } }, "upcoming": { "type": "array", "items": { "type": "object" } } } }
+        },
+        {
+          "name": "forecast",
+          "kind": "query",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": {} },
+          "output_schema": { "type": "object", "properties": { "weighted_total": { "type": "number" }, "by_stage": { "type": "array", "items": { "type": "object" } }, "won": { "type": "integer" }, "lost": { "type": "integer" }, "win_rate": { "type": "number" }, "funnel": { "type": "object" } } }
+        },
+        {
+          "name": "update_account",
+          "kind": "mutation",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
+          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+        },
+        {
+          "name": "update_contact",
+          "kind": "mutation",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
+          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+        },
+        {
+          "name": "update_opportunity",
+          "kind": "mutation",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
+          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+        },
+        {
+          "name": "update_lead",
+          "kind": "mutation",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
+          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+        },
+        {
+          "name": "close_opportunity",
+          "kind": "mutation",
+          "idempotency": "idempotent",
+          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "outcome": { "type": "string" } }, "required": ["id", "outcome"] },
+          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
         }
       ]
     }

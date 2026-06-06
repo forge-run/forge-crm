@@ -1,0 +1,26 @@
+{# /app/work — the caller's open activities (tasks, follow-ups), soonest first.
+   The rep's daily driver. #}
+{% set rows = props.data.work.rows %}
+{% set body %}
+<div class="op">
+  <div class="op-toolbar"><span class="op-count">{{ props.data.work.total }} open {{ "item" if props.data.work.total == 1 else "items" }}</span></div>
+  {% if rows %}
+  <table class="op-table">
+    <thead><tr><th>Type</th><th>What</th><th>Due</th><th>On</th></tr></thead>
+    <tbody>
+      {% for w in rows %}
+      <tr>
+        <td><span class="pill pill--working">{{ w.kind }}</span></td>
+        <td>{{ w.subject }}</td>
+        <td class="op-muted">{{ w.due_at | default("—") }}</td>
+        <td class="op-muted">{% if w.related_type %}<a class="op-rowlink" href="/app/{{ w.related_type }}s/{{ w.related_id }}">{{ w.related_type }}</a>{% else %}—{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="op-empty"><strong>All clear.</strong> No open tasks or follow-ups assigned to you. Log a task against any record with a due date and it shows up here.</div>
+  {% endif %}
+</div>
+{% endset %}
+{{ component("crm_shell", {"active": "work", "title": "My work", "action_href": "", "action_label": ""}, {"body": body}) }}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1",
+  "name": "crm_contact_detail",
+  "route": { "method": "GET", "path": "/app/contacts/:id" },
+  "auth": "Authenticated",
+  "surface": ["app"],
+  "rendering": "BufferedHtml",
+  "data": {
+    "rec": {
+      "query": "@op:crm::get_contact",
+      "params": { "id": "$path:id" },
+      "default": { "contact": null, "account": null, "activities": [] }
+    }
+  },
+  "template": { "kind": "Path", "path": "pages/app/contact_detail.page.html" },
+  "title": "Contact — Forge CRM"
+}

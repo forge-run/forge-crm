@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1",
+  "name": "crm_opportunity_detail",
+  "route": { "method": "GET", "path": "/app/opportunities/:id" },
+  "auth": "Authenticated",
+  "surface": ["app"],
+  "rendering": "BufferedHtml",
+  "data": {
+    "rec": {
+      "query": "@op:crm::get_opportunity",
+      "params": { "id": "$path:id" },
+      "default": { "opportunity": null, "account": null, "stages": [], "activities": [] }
+    }
+  },
+  "template": { "kind": "Path", "path": "pages/app/opportunity_detail.page.html" },
+  "title": "Opportunity — Forge CRM"
+}

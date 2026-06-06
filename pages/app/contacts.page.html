@@ -1,0 +1,28 @@
+{# /app/contacts — contacts worklist with search. #}
+{% set rows = props.data.list.rows %}
+{% set body %}
+<div class="op">
+  <form class="op-toolbar" method="get" action="/app/contacts" hx-boost="true">
+    <input class="op-search" type="search" name="q" value="{{ props.params.q | default('') }}" placeholder="Search contacts by last name…">
+    <span class="op-count">{{ props.data.list.total }} {{ "contact" if props.data.list.total == 1 else "contacts" }}</span>
+  </form>
+  {% if rows %}
+  <table class="op-table">
+    <thead><tr><th>Name</th><th>Title</th><th>Email</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for c in rows %}
+      <tr>
+        <td><a class="op-rowlink" href="/app/contacts/{{ c.id }}">{{ c.first_name }} {{ c.last_name }}</a></td>
+        <td class="op-muted">{{ c.title | default("—") }}</td>
+        <td class="op-muted">{{ c.email | default("—") }}</td>
+        <td><span class="pill pill--{{ c.status | default('active') }}">{{ c.status | default("active") }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="op-empty"><strong>No contacts yet.</strong> Add a person, or convert a lead to create one automatically.</div>
+  {% endif %}
+</div>
+{% endset %}
+{{ component("crm_shell", {"active": "contacts", "title": "Contacts", "action_href": "/app/contacts/new", "action_label": "New contact"}, {"body": body}) }}

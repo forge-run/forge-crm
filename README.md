@@ -37,6 +37,22 @@ A working sales CRM data model and UI:
 
 Every object is multi-tenant-isolated, owner-aware, audited (`created_at` / `created_by` / `last_modified_*` come free with the `Record` archetype), and reachable over REST, an MCP tool surface, and WebSocket subscriptions — all derived from the schema, none hand-written.
 
+### The screens (operational UI)
+
+Not a dashboard bolted onto a database — work surfaces tied to the sales lifecycle:
+
+| Surface | Route | What you do there |
+|---|---|---|
+| **Dashboard** | `/app` | Open pipeline value, deal/contact/lead counts, recent activity. |
+| **My work** | `/app/work` | Your open tasks & follow-ups, soonest first — the daily driver. |
+| **Pipeline board** | `/app/pipeline` | Open deals grouped by your stages; move + close. |
+| **Record workbench** | `/app/accounts/:id`, `/app/contacts/:id`, `/app/opportunities/:id` | The 360° view — related records, activity timeline, log-a-call composer, quick actions. |
+| **Lead inbox** | `/app/leads` | Triage, qualify, and convert leads → contact + opportunity. |
+| **Worklists** | `/app/{accounts,contacts,opportunities}` | Searchable, filterable lists that link into the workbench. |
+| **Forecast** | `/app/forecast` | Weighted pipeline (amount × stage probability), win rate, lead→won funnel. |
+
+Every action a human takes here is a `@op:crm::*` operation — which is **also** the MCP tool an agent calls. The human workbench and the agent operate the same surface, under the same row-level security.
+
 ```
 schemas/        ← the data model: one JSON file per table (the crown jewel — pure declarative config)
 pages/          ← the UI: server-rendered pages (.page.json route + .page.html template + .page.css)

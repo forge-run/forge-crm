@@ -1,0 +1,35 @@
+{# /app/opportunities — deals worklist with status filter. (Board view lives
+   at /app/pipeline; this is the flat, sortable list.) #}
+{% set rows = props.data.list.rows %}
+{% set status = props.params.status %}
+{% set body %}
+<div class="op">
+  <div class="op-toolbar">
+    <div class="op-chips">
+      <a class="op-chip{% if not status %} is-active{% endif %}" href="/app/opportunities">All</a>
+      <a class="op-chip{% if status == 'open' %} is-active{% endif %}" href="/app/opportunities?status=open">Open</a>
+      <a class="op-chip{% if status == 'won' %} is-active{% endif %}" href="/app/opportunities?status=won">Won</a>
+      <a class="op-chip{% if status == 'lost' %} is-active{% endif %}" href="/app/opportunities?status=lost">Lost</a>
+    </div>
+    <span class="op-count">{{ props.data.list.total }} {{ "deal" if props.data.list.total == 1 else "deals" }}</span>
+  </div>
+  {% if rows %}
+  <table class="op-table">
+    <thead><tr><th>Opportunity</th><th>Status</th><th class="op-num">Amount</th><th>Close date</th></tr></thead>
+    <tbody>
+      {% for o in rows %}
+      <tr>
+        <td><a class="op-rowlink" href="/app/opportunities/{{ o.id }}">{{ o.name }}</a></td>
+        <td><span class="pill pill--{{ o.status | default('open') }}">{{ o.status | default("open") }}</span></td>
+        <td class="op-num">${{ o.amount | default(0) | int }}</td>
+        <td class="op-muted">{{ o.close_date | default("—") }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="op-empty"><strong>No deals here.</strong> Create an opportunity, or work your pipeline board.</div>
+  {% endif %}
+</div>
+{% endset %}
+{{ component("crm_shell", {"active": "pipeline", "title": "Opportunities", "action_href": "/app/opportunities/new", "action_label": "New deal"}, {"body": body}) }}

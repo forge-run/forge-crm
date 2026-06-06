@@ -48,3 +48,108 @@
   .crm-rail__nav { flex-direction: row; }
   .crm-rail__brand { padding: 4px 8px; } .crm-rail__foot { display: none; } .crm-nav span { display: none; }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   SHARED OPERATIONAL UI KIT — used by every page through the body slot
+   (slotted content renders inside this component's scope). Tables,
+   filter toolbars, the record workbench, field grids, forms, status
+   pills, empty states. Page CSS stays thin.
+   ════════════════════════════════════════════════════════════════ */
+
+/* toolbar above a worklist: search + filter chips + count */
+.op-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.op-search { flex: 1; min-width: 200px; height: 38px; padding: 0 13px; border-radius: 9px;
+  border: 1px solid var(--brand-border); background: var(--brand-surface); color: var(--brand-foreground);
+  font-family: var(--font-sans); font-size: 14px; outline: none; }
+.op-search:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 3px var(--brand-ember-soft); }
+.op-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.op-chip { font-size: 12.5px; font-weight: 500; color: var(--brand-foreground-muted); text-decoration: none;
+  padding: 7px 13px; border-radius: 999px; border: 1px solid var(--brand-border); background: transparent;
+  transition: color var(--brand-duration-fast,120ms), border-color var(--brand-duration-fast,120ms), background var(--brand-duration-fast,120ms); }
+.op-chip:hover { color: var(--brand-foreground); border-color: var(--brand-foreground-faint); }
+.op-chip.is-active { color: var(--brand-primary); border-color: var(--brand-ember-mid, rgba(232,137,74,0.34)); background: var(--brand-ember-soft); }
+.op-count { font-size: 12.5px; color: var(--brand-foreground-faint); margin-left: auto; }
+
+/* worklist table */
+.op-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.op-table thead th { text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--brand-foreground-faint); border-bottom: 1px solid var(--brand-border); }
+.op-table tbody td { padding: 13px 14px; border-bottom: 1px solid var(--hairline); color: var(--brand-foreground); vertical-align: middle; }
+.op-table tbody tr { transition: background var(--brand-duration-fast,120ms); }
+.op-table tbody tr:hover { background: color-mix(in srgb, var(--brand-surface) 55%, transparent); }
+.op-table a.op-rowlink { color: var(--brand-foreground); font-weight: 500; text-decoration: none; }
+.op-table a.op-rowlink:hover { color: var(--brand-primary); }
+.op-table .op-num { font-feature-settings: 'tnum' 1; text-align: right; }
+.op-table .op-muted { color: var(--brand-foreground-muted); }
+
+/* status / kind pills */
+.pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.02em; background: var(--brand-surface-2, var(--brand-surface)); color: var(--brand-foreground-muted); }
+.pill--open, .pill--new, .pill--active, .pill--qualified, .pill--customer { background: rgba(108,201,163,0.16); color: var(--brand-success,#6cc9a3); }
+.pill--working, .pill--prospect, .pill--warm { background: var(--brand-ember-soft); color: var(--brand-primary); }
+.pill--won { background: rgba(108,201,163,0.18); color: var(--brand-success,#6cc9a3); }
+.pill--lost, .pill--unqualified, .pill--inactive, .pill--cold { background: rgba(232,115,106,0.16); color: var(--brand-danger,#e8736a); }
+.pill--hot { background: rgba(232,137,74,0.18); color: var(--brand-primary); }
+
+/* record workbench — header + two-column body (main + side rail) */
+.wb { max-width: 1080px; display: flex; flex-direction: column; gap: 22px; }
+.wb-head { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; padding-bottom: 18px; border-bottom: 1px solid var(--hairline); }
+.wb-head__main { flex: 1; min-width: 0; }
+.wb-head__title { font-family: var(--font-serif, Georgia, serif); font-weight: 400; font-size: 30px; letter-spacing: -0.015em; margin: 0; color: var(--brand-foreground); }
+.wb-head__sub { font-size: 13.5px; color: var(--brand-foreground-muted); margin: 6px 0 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.wb-head__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.wb-grid { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 22px; align-items: start; }
+.wb-panel { border: 1px solid var(--brand-border); border-radius: 14px; background: color-mix(in srgb, var(--brand-surface) 38%, var(--brand-background)); overflow: hidden; }
+.wb-panel__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 13px 16px; border-bottom: 1px solid var(--hairline); }
+.wb-panel__title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand-foreground-faint); }
+.wb-panel__body { padding: 6px 16px 12px; }
+.wb-stack { display: flex; flex-direction: column; gap: 22px; }
+
+/* field grid (read view of a record) */
+.fieldgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 24px; padding: 16px; }
+.field-ro { display: flex; flex-direction: column; gap: 3px; }
+.field-ro__label { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand-foreground-faint); }
+.field-ro__value { font-size: 14px; color: var(--brand-foreground); }
+
+/* mini list inside a panel (related records) */
+.minilist { list-style: none; margin: 0; padding: 0; }
+.minilist li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+.minilist li:last-child { border-bottom: none; }
+.minilist a { color: var(--brand-foreground); text-decoration: none; font-size: 13.5px; font-weight: 500; }
+.minilist a:hover { color: var(--brand-primary); }
+.minilist .minilist__meta { font-size: 12px; color: var(--brand-foreground-faint); font-feature-settings: 'tnum' 1; }
+
+/* activity timeline (record + dashboard) */
+.timeline { list-style: none; margin: 0; padding: 0; }
+.timeline__row { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--hairline); }
+.timeline__row:last-child { border-bottom: none; }
+.timeline__kind { flex: none; width: 62px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 4px 0; border-radius: 6px; background: var(--brand-ember-soft); color: var(--brand-primary); }
+.timeline__kind--call { background: rgba(122,167,255,0.14); color: #7aa7ff; }
+.timeline__kind--meeting { background: rgba(167,139,250,0.16); color: #a78bfa; }
+.timeline__kind--task { background: rgba(108,201,163,0.16); color: var(--brand-success,#6cc9a3); }
+.timeline__c { flex: 1; min-width: 0; }
+.timeline__subject { font-size: 14px; color: var(--brand-foreground); }
+.timeline__when { font-size: 11.5px; color: var(--brand-foreground-faint); }
+
+/* forms (create / edit) */
+.form { max-width: 560px; display: flex; flex-direction: column; gap: 16px; }
+.form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12.5px; font-weight: 600; color: var(--brand-foreground); }
+.field input, .field select, .field textarea { width: 100%; padding: 10px 12px; border-radius: 9px;
+  border: 1px solid var(--brand-border); background: var(--brand-background); color: var(--brand-foreground);
+  font-family: var(--font-sans); font-size: 14px; outline: none; }
+.field textarea { min-height: 96px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 3px var(--brand-ember-soft); }
+.form__actions { display: flex; gap: 10px; margin-top: 6px; }
+
+/* inline composer (log activity) */
+.composer { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; }
+.composer__kinds { display: flex; gap: 6px; }
+
+/* generic empty state */
+.op-empty { padding: 40px; text-align: center; border: 1px dashed var(--brand-border); border-radius: 14px; color: var(--brand-foreground-muted); font-size: 14px; }
+.op-empty strong { color: var(--brand-foreground); font-weight: 600; }
+
+@media (max-width: 900px) { .wb-grid { grid-template-columns: 1fr; } .fieldgrid { grid-template-columns: 1fr; } .form__row { grid-template-columns: 1fr; } }

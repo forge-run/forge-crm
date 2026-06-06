@@ -1,0 +1,17 @@
+{
+  "schema_version": "0.1",
+  "name": "crm_contacts",
+  "route": { "method": "GET", "path": "/app/contacts" },
+  "auth": "Authenticated",
+  "surface": ["app"],
+  "rendering": "BufferedHtml",
+  "data": {
+    "list": {
+      "query": "@op:crm::list_contacts",
+      "params": { "search": "$param:q" },
+      "default": { "rows": [], "total": 0 }
+    }
+  },
+  "template": { "kind": "Path", "path": "pages/app/contacts.page.html" },
+  "title": "Contacts — Forge CRM"
+}

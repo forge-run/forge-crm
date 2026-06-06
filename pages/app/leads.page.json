@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "name": "crm_leads",
+  "route": { "method": "GET", "path": "/app/leads" },
+  "auth": "Authenticated",
+  "surface": ["app"],
+  "rendering": "BufferedHtml",
+  "data": {
+    "list": {
+      "query": "@op:crm::list_leads",
+      "params": { "status": "$param:status" },
+      "default": { "rows": [], "total": 0 }
+    }
+  },
+  "template": { "kind": "Path", "path": "pages/app/leads.page.html" },
+  "title": "Leads — Forge CRM",
+  "description": "Lead qualification inbox — triage, rate, qualify, and convert."
+}

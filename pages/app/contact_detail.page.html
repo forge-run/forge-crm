@@ -1,0 +1,59 @@
+{# /app/contacts/:id — the Contact workbench (360°). #}
+{% set c = props.data.rec.contact %}
+{% set acct = props.data.rec.account %}
+{% set body %}
+{% if c %}
+<div class="wb">
+  <header class="wb-head">
+    <div class="wb-head__main">
+      <h1 class="wb-head__title">{{ c.first_name }} {{ c.last_name }}</h1>
+      <p class="wb-head__sub">
+        {% if c.title %}<span>{{ c.title }}</span>{% endif %}
+        {% if acct %}<a href="/app/accounts/{{ acct.id }}">{{ acct.name }}</a>{% endif %}
+        <span class="pill pill--{{ c.status | default('active') }}">{{ c.status | default('active') }}</span>
+      </p>
+    </div>
+    <div class="wb-head__actions"><a class="crm-btn crm-btn--ghost" href="/app/contacts/{{ c.id }}/edit">Edit</a></div>
+  </header>
+
+  <div class="wb-grid">
+    <div class="wb-stack">
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Activity</span></div>
+        <div class="composer">
+          <form method="post" action="/api/v1/crm/log_activity" hx-boost="false" class="form" style="max-width:none;gap:10px">
+            <input type="hidden" name="related_type" value="contact"><input type="hidden" name="related_id" value="{{ c.id }}">
+            <div class="field"><select name="kind"><option value="note">Note</option><option value="call">Call</option><option value="email">Email</option><option value="meeting">Meeting</option><option value="task">Task</option></select></div>
+            <div class="field"><input type="text" name="subject" placeholder="Log a call, email, note…" required></div>
+            <div class="form__actions"><button class="crm-btn crm-btn--ember" type="submit">Log activity</button></div>
+          </form>
+        </div>
+        <div class="wb-panel__body">
+          {% if props.data.rec.activities %}
+          <ul class="timeline">
+            {% for ev in props.data.rec.activities %}
+            <li class="timeline__row"><span class="timeline__kind timeline__kind--{{ ev.kind }}">{{ ev.kind }}</span><div class="timeline__c"><div class="timeline__subject">{{ ev.subject }}</div><div class="timeline__when">{{ ev.created_at }}</div></div></li>
+            {% endfor %}
+          </ul>
+          {% else %}<p class="op-muted" style="padding:8px 0">No activity logged yet.</p>{% endif %}
+        </div>
+      </section>
+    </div>
+    <div class="wb-stack">
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Details</span></div>
+        <div class="fieldgrid">
+          <div class="field-ro"><span class="field-ro__label">Email</span><span class="field-ro__value">{{ c.email | default("—") }}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Phone</span><span class="field-ro__value">{{ c.phone | default("—") }}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Title</span><span class="field-ro__value">{{ c.title | default("—") }}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Department</span><span class="field-ro__value">{{ c.department | default("—") }}</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="op-empty"><strong>Contact not found.</strong> <a href="/app/contacts">Back to contacts</a></div>
+{% endif %}
+{% endset %}
+{{ component("crm_shell", {"active": "contacts", "title": "Contact", "action_href": "", "action_label": ""}, {"body": body}) }}

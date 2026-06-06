@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "name": "crm_forecast",
+  "route": { "method": "GET", "path": "/app/forecast" },
+  "auth": "Authenticated",
+  "surface": ["app"],
+  "rendering": "BufferedHtml",
+  "data": {
+    "f": {
+      "query": "@op:crm::forecast",
+      "params": {},
+      "default": { "weighted_total": 0, "by_stage": [], "won": 0, "lost": 0, "win_rate": 0, "funnel": { "leads": 0, "qualified": 0, "open_opportunities": 0, "won": 0 } }
+    }
+  },
+  "template": { "kind": "Path", "path": "pages/app/forecast.page.html" },
+  "title": "Forecast — Forge CRM",
+  "description": "Weighted pipeline, win rate, and the lead-to-won funnel."
+}

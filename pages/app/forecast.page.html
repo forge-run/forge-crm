@@ -1,0 +1,52 @@
+{# /app/forecast — the manager view: weighted pipeline (amount × stage
+   probability), per-stage rollup, win rate, and the lead→won funnel. #}
+{% set f = props.data.f %}
+{% set fn = f.funnel %}
+{% set body %}
+<div class="op" style="max-width:980px;display:flex;flex-direction:column;gap:26px">
+  <div class="dash__stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <div class="stat stat--ember">
+      <span class="stat__label">Weighted pipeline</span>
+      <span class="stat__value">${{ f.weighted_total | int }}</span>
+      <span class="stat__sub">amount × stage probability</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Win rate</span>
+      <span class="stat__value">{{ (f.win_rate * 100) | int }}%</span>
+      <span class="stat__sub">{{ f.won }} won · {{ f.lost }} lost</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Open deals</span>
+      <span class="stat__value">{{ fn.open_opportunities }}</span>
+      <span class="stat__sub">in flight</span>
+    </div>
+  </div>
+
+  <section class="wb-panel">
+    <div class="wb-panel__head"><span class="wb-panel__title">Weighted by stage</span></div>
+    <table class="op-table">
+      <thead><tr><th>Stage</th><th class="op-num">Deals</th><th class="op-num">Raw value</th><th class="op-num">Weighted</th></tr></thead>
+      <tbody>
+        {% for s in f.by_stage %}
+        <tr><td>{{ s.stage }}</td><td class="op-num">{{ s.count }}</td><td class="op-num op-muted">${{ s.raw_value | int }}</td><td class="op-num">${{ s.weighted_value | int }}</td></tr>
+        {% else %}
+        <tr><td colspan="4"><div class="op-empty" style="border:none">No pipeline stages defined yet.</div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="wb-panel">
+    <div class="wb-panel__head"><span class="wb-panel__title">Funnel</span></div>
+    <table class="op-table">
+      <tbody>
+        <tr><td>Leads</td><td class="op-num">{{ fn.leads }}</td></tr>
+        <tr><td>Qualified</td><td class="op-num">{{ fn.qualified }}</td></tr>
+        <tr><td>Open opportunities</td><td class="op-num">{{ fn.open_opportunities }}</td></tr>
+        <tr><td>Won</td><td class="op-num">{{ fn.won }}</td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+{% endset %}
+{{ component("crm_shell", {"active": "forecast", "title": "Forecast", "action_href": "", "action_label": ""}, {"body": body}) }}

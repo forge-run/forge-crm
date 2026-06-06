@@ -1,0 +1,24 @@
+{# /app/contacts/new — create a contact. This is the canonical form pattern:
+   a plain POST to the matching create op. Account / opportunity / lead "new"
+   forms are identical in shape (swap the fields + the action op). Edit forms
+   reuse this template with values prefilled + a hidden id, posting to the
+   update_* op. Confirm the op-invocation path against your runtime. #}
+{% set body %}
+<form class="form" method="post" action="/api/v1/crm/create_contact" hx-boost="false">
+  <div class="form__row">
+    <div class="field"><label for="fn">First name</label><input id="fn" type="text" name="first_name" required></div>
+    <div class="field"><label for="ln">Last name</label><input id="ln" type="text" name="last_name"></div>
+  </div>
+  <div class="field"><label for="em">Email</label><input id="em" type="email" name="email" placeholder="name@company.com"></div>
+  <div class="form__row">
+    <div class="field"><label for="ph">Phone</label><input id="ph" type="tel" name="phone"></div>
+    <div class="field"><label for="ti">Title</label><input id="ti" type="text" name="title"></div>
+  </div>
+  <div class="field"><label for="ac">Account ID</label><input id="ac" type="text" name="account_id" placeholder="optional — link to an account"></div>
+  <div class="form__actions">
+    <button class="crm-btn crm-btn--ember" type="submit">Create contact</button>
+    <a class="crm-btn crm-btn--ghost" href="/app/contacts">Cancel</a>
+  </div>
+</form>
+{% endset %}
+{{ component("crm_shell", {"active": "contacts", "title": "New contact", "action_href": "", "action_label": ""}, {"body": body}) }}

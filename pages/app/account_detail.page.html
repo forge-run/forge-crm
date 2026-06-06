@@ -1,0 +1,93 @@
+{# /app/accounts/:id — the Account workbench (360°). Header + a main column
+   (related deals/contacts + activity timeline + log composer) and a side rail
+   of account fields. This is where a rep actually works the account. #}
+{% set a = props.data.rec.account %}
+{% set body %}
+{% if a %}
+<div class="wb">
+  <header class="wb-head">
+    <div class="wb-head__main">
+      <h1 class="wb-head__title">{{ a.name }}</h1>
+      <p class="wb-head__sub">
+        {% if a.type %}<span class="pill pill--{{ a.type }}">{{ a.type }}</span>{% endif %}
+        {% if a.industry %}<span>{{ a.industry }}</span>{% endif %}
+        {% if a.website %}<a href="{{ a.website }}" hx-boost="false">{{ a.domain | default(a.website) }}</a>{% endif %}
+      </p>
+    </div>
+    <div class="wb-head__actions">
+      <a class="crm-btn crm-btn--ghost" href="/app/accounts/{{ a.id }}/edit">Edit</a>
+      <a class="crm-btn crm-btn--ember" href="/app/opportunities/new?account_id={{ a.id }}">New deal +</a>
+    </div>
+  </header>
+
+  <div class="wb-grid">
+    <div class="wb-stack">
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Open opportunities</span><span class="op-count">{{ props.data.rec.opportunities | length }}</span></div>
+        <div class="wb-panel__body">
+          {% if props.data.rec.opportunities %}
+          <ul class="minilist">
+            {% for o in props.data.rec.opportunities %}
+            <li><a href="/app/opportunities/{{ o.id }}">{{ o.name }}</a><span class="minilist__meta">${{ o.amount | default(0) | int }} · <span class="pill pill--{{ o.status | default('open') }}">{{ o.status | default('open') }}</span></span></li>
+            {% endfor %}
+          </ul>
+          {% else %}<p class="op-muted" style="padding:8px 0">No opportunities yet.</p>{% endif %}
+        </div>
+      </section>
+
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Activity</span></div>
+        <div class="composer">
+          <form method="post" action="/api/v1/crm/log_activity" hx-boost="false" class="form" style="max-width:none;gap:10px">
+            <input type="hidden" name="related_type" value="account">
+            <input type="hidden" name="related_id" value="{{ a.id }}">
+            <div class="composer__kinds field">
+              <select name="kind"><option value="note">Note</option><option value="call">Call</option><option value="email">Email</option><option value="meeting">Meeting</option><option value="task">Task</option></select>
+            </div>
+            <div class="field"><input type="text" name="subject" placeholder="Log a call, email, note…" required></div>
+            <div class="form__actions"><button class="crm-btn crm-btn--ember" type="submit">Log activity</button></div>
+          </form>
+        </div>
+        <div class="wb-panel__body">
+          {% if props.data.rec.activities %}
+          <ul class="timeline">
+            {% for ev in props.data.rec.activities %}
+            <li class="timeline__row"><span class="timeline__kind timeline__kind--{{ ev.kind }}">{{ ev.kind }}</span><div class="timeline__c"><div class="timeline__subject">{{ ev.subject }}</div><div class="timeline__when">{{ ev.created_at }}</div></div></li>
+            {% endfor %}
+          </ul>
+          {% else %}<p class="op-muted" style="padding:8px 0">No activity logged yet.</p>{% endif %}
+        </div>
+      </section>
+    </div>
+
+    <div class="wb-stack">
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Details</span></div>
+        <div class="fieldgrid">
+          <div class="field-ro"><span class="field-ro__label">Phone</span><span class="field-ro__value">{{ a.phone | default("—") }}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Employees</span><span class="field-ro__value">{{ a.employee_count | default("—") }}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Revenue</span><span class="field-ro__value">{% if a.annual_revenue %}${{ a.annual_revenue | int }}{% else %}—{% endif %}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Location</span><span class="field-ro__value">{{ a.billing_city | default("—") }}</span></div>
+        </div>
+      </section>
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Contacts</span><span class="op-count">{{ props.data.rec.contacts | length }}</span></div>
+        <div class="wb-panel__body">
+          {% if props.data.rec.contacts %}
+          <ul class="minilist">
+            {% for c in props.data.rec.contacts %}
+            <li><a href="/app/contacts/{{ c.id }}">{{ c.first_name }} {{ c.last_name }}</a><span class="minilist__meta">{{ c.title | default("") }}</span></li>
+            {% endfor %}
+          </ul>
+          {% else %}<p class="op-muted" style="padding:8px 0">No contacts yet.</p>{% endif %}
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="op-empty"><strong>Account not found.</strong> It may have been deleted, or it belongs to another tenant. <a href="/app/accounts">Back to accounts</a></div>
+{% endif %}
+{% endset %}
+
+{{ component("crm_shell", {"active": "accounts", "title": "Account", "action_href": "", "action_label": ""}, {"body": body}) }}

@@ -1,0 +1,82 @@
+{# /app/opportunities/:id — the deal workbench. Header with amount + status,
+   stage-move + close-won/lost actions, account link, activity timeline. #}
+{% set o = props.data.rec.opportunity %}
+{% set acct = props.data.rec.account %}
+{% set body %}
+{% if o %}
+<div class="wb">
+  <header class="wb-head">
+    <div class="wb-head__main">
+      <h1 class="wb-head__title">{{ o.name }}</h1>
+      <p class="wb-head__sub">
+        <span class="pill pill--{{ o.status | default('open') }}">{{ o.status | default('open') }}</span>
+        <span class="op-num" style="font-weight:600;color:var(--brand-primary)">${{ o.amount | default(0) | int }}</span>
+        {% if acct %}<a href="/app/accounts/{{ acct.id }}">{{ acct.name }}</a>{% endif %}
+        {% if o.close_date %}<span class="op-muted">closes {{ o.close_date }}</span>{% endif %}
+      </p>
+    </div>
+    <div class="wb-head__actions">
+      {% if o.status == 'open' or not o.status %}
+      <form method="post" action="/api/v1/crm/close_opportunity" hx-boost="false" style="display:inline"><input type="hidden" name="id" value="{{ o.id }}"><input type="hidden" name="outcome" value="won"><button class="crm-btn crm-btn--ember" type="submit">Mark won</button></form>
+      <form method="post" action="/api/v1/crm/close_opportunity" hx-boost="false" style="display:inline"><input type="hidden" name="id" value="{{ o.id }}"><input type="hidden" name="outcome" value="lost"><button class="crm-btn crm-btn--ghost" type="submit">Mark lost</button></form>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="wb-grid">
+    <div class="wb-stack">
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Stage</span></div>
+        <div class="composer">
+          <form method="post" action="/api/v1/crm/move_opportunity" hx-boost="false" class="form" style="max-width:none;flex-direction:row;align-items:flex-end;gap:10px">
+            <input type="hidden" name="id" value="{{ o.id }}">
+            <div class="field" style="flex:1"><label>Move to stage</label>
+              <select name="stage_id">
+                {% for st in props.data.rec.stages %}<option value="{{ st.id }}"{% if st.id == o.stage_id %} selected{% endif %}>{{ st.name }}</option>{% endfor %}
+              </select>
+            </div>
+            <button class="crm-btn crm-btn--ghost" type="submit">Update</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Activity</span></div>
+        <div class="composer">
+          <form method="post" action="/api/v1/crm/log_activity" hx-boost="false" class="form" style="max-width:none;gap:10px">
+            <input type="hidden" name="related_type" value="opportunity"><input type="hidden" name="related_id" value="{{ o.id }}">
+            <div class="field"><select name="kind"><option value="note">Note</option><option value="call">Call</option><option value="email">Email</option><option value="meeting">Meeting</option><option value="task">Task</option></select></div>
+            <div class="field"><input type="text" name="subject" placeholder="Log a call, email, next step…" required></div>
+            <div class="form__actions"><button class="crm-btn crm-btn--ember" type="submit">Log activity</button></div>
+          </form>
+        </div>
+        <div class="wb-panel__body">
+          {% if props.data.rec.activities %}
+          <ul class="timeline">
+            {% for ev in props.data.rec.activities %}
+            <li class="timeline__row"><span class="timeline__kind timeline__kind--{{ ev.kind }}">{{ ev.kind }}</span><div class="timeline__c"><div class="timeline__subject">{{ ev.subject }}</div><div class="timeline__when">{{ ev.created_at }}</div></div></li>
+            {% endfor %}
+          </ul>
+          {% else %}<p class="op-muted" style="padding:8px 0">No activity yet.</p>{% endif %}
+        </div>
+      </section>
+    </div>
+
+    <div class="wb-stack">
+      <section class="wb-panel">
+        <div class="wb-panel__head"><span class="wb-panel__title">Details</span><a class="op-count" href="/app/opportunities/{{ o.id }}/edit">Edit</a></div>
+        <div class="fieldgrid">
+          <div class="field-ro"><span class="field-ro__label">Amount</span><span class="field-ro__value">${{ o.amount | default(0) | int }}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Probability</span><span class="field-ro__value">{{ o.probability | default("—") }}{% if o.probability %}%{% endif %}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Close date</span><span class="field-ro__value">{{ o.close_date | default("—") }}</span></div>
+          <div class="field-ro"><span class="field-ro__label">Currency</span><span class="field-ro__value">{{ o.currency | default("USD") }}</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="op-empty"><strong>Opportunity not found.</strong> <a href="/app/opportunities">Back to deals</a></div>
+{% endif %}
+{% endset %}
+{{ component("crm_shell", {"active": "pipeline", "title": "Opportunity", "action_href": "", "action_label": ""}, {"body": body}) }}

@@ -338,3 +338,192 @@ pub fn convert_lead(ctx: &OpContext, input: &Value) -> Result<Value, OpError> {
     let _ = &one; // (helper kept for future joins)
     Ok(json!({ "contact_id": contact_id, "account_id": "", "opportunity_id": opportunity_id }))
 }
+
+// ── operational reads (workbench / lists / worklist / forecast) ──
+
+fn by_id(table: &str, id: &str) -> Result<Value, OpError> {
+    Ok(rows(&query(json!({
+        "from": table,
+        "filter": { "column": "id", "op": "eq", "value": id },
+        "limit": 1
+    }))?)
+    .into_iter()
+    .next()
+    .unwrap_or(Value::Null))
+}
+
+fn related(table: &str, col: &str, id: &str, limit: i64) -> Result<Vec<Value>, OpError> {
+    Ok(rows(&query(json!({
+        "from": table,
+        "filter": { "column": col, "op": "eq", "value": id },
+        "sort": [{ "column": "created_at", "direction": "desc" }],
+        "limit": limit
+    }))?))
+}
+
+fn timeline(related_type: &str, related_id: &str) -> Result<Vec<Value>, OpError> {
+    Ok(rows(&query(json!({
+        "from": "activities",
+        "filter": { "and": [
+            { "column": "related_type", "op": "eq", "value": related_type },
+            { "column": "related_id", "op": "eq", "value": related_id }
+        ]},
+        "sort": [{ "column": "created_at", "direction": "desc" }],
+        "limit": 50
+    }))?))
+}
+
+/// Account 360° — the workbench. Account + its contacts + its opportunities +
+/// its activity timeline, in one payload.
+pub fn get_account(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> {
+    let id = s(input, "id").ok_or_else(|| OpError::BadRequest("id required".into()))?;
+    let account = by_id("accounts", id)?;
+    if account.is_null() { return Err(OpError::NotFound); }
+    Ok(json!({
+        "account": account,
+        "contacts": related("contacts", "account_id", id, 200)?,
+        "opportunities": related("opportunities", "account_id", id, 200)?,
+        "activities": timeline("account", id)?
+    }))
+}
+
+/// Opportunity 360° — the deal workbench. Opp + its account + the full stage
+/// list (for the move/close control) + its activity timeline.
+pub fn get_opportunity(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> {
+    let id = s(input, "id").ok_or_else(|| OpError::BadRequest("id required".into()))?;
+    let opp = by_id("opportunities", id)?;
+    if opp.is_null() { return Err(OpError::NotFound); }
+    let account = match opp.get("account_id").and_then(|v| v.as_str()) {
+        Some(a) if !a.is_empty() => by_id("accounts", a)?,
+        _ => Value::Null,
+    };
+    let stages = rows(&query(json!({
+        "from": "pipeline_stages",
+        "sort": [{ "column": "position", "direction": "asc" }],
+        "limit": 50
+    }))?);
+    Ok(json!({ "opportunity": opp, "account": account, "stages": stages, "activities": timeline("opportunity", id)? }))
+}
+
+pub fn list_opportunities(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> {
+    let mut spec = json!({
+        "from": "opportunities",
+        "sort": [{ "column": "close_date", "direction": "asc" }],
+        "follow": [{ "relationship": "account_id", "select": ["id", "name"] }],
+        "limit": 300
+    });
+    if let Some(status) = s(input, "status") {
+        spec["filter"] = json!({ "column": "status", "op": "eq", "value": status });
+    }
+    let r = rows(&query(spec)?);
+    Ok(json!({ "total": r.len(), "rows": r }))
+}
+
+/// The caller's open work — incomplete activities they own, soonest first.
+/// (No server clock dependency; the page can bucket by `due_at` client-side.)
+pub fn my_work(ctx: &OpContext, _input: &Value) -> Result<Value, OpError> {
+    let owner = ctx.user_id.clone();
+    let r = rows(&query(json!({
+        "from": "activities",
+        "filter": { "and": [
+            { "column": "completed", "op": "eq", "value": false },
+            { "column": "owner_id", "op": "eq", "value": owner }
+        ]},
+        "sort": [{ "column": "due_at", "direction": "asc" }],
+        "limit": 200
+    }))?);
+    Ok(json!({ "rows": r, "total": r.len() }))
+}
+
+/// Manager forecast — weighted open pipeline (amount × stage probability),
+/// per-stage rollup, win rate, and the lead→won funnel.
+pub fn forecast(_ctx: &OpContext, _input: &Value) -> Result<Value, OpError> {
+    let stages = rows(&query(json!({
+        "from": "pipeline_stages",
+        "sort": [{ "column": "position", "direction": "asc" }],
+        "limit": 50
+    }))?);
+    let open = rows(&query(json!({
+        "from": "opportunities",
+        "filter": { "column": "status", "op": "eq", "value": "open" },
+        "select": ["id", "amount", "stage_id"],
+        "limit": 2000
+    }))?);
+
+    let mut weighted_total = 0.0_f64;
+    let by_stage: Vec<Value> = stages.iter().map(|st| {
+        let sid = st.get("id").and_then(|v| v.as_str()).unwrap_or("");
+        let prob = st.get("probability").and_then(|v| v.as_f64()).unwrap_or(0.0) / 100.0;
+        let mut raw = 0.0_f64;
+        let mut n = 0i64;
+        for o in &open {
+            if o.get("stage_id").and_then(|v| v.as_str()) == Some(sid) {
+                raw += o.get("amount").and_then(|a| a.as_f64()).unwrap_or(0.0);
+                n += 1;
+            }
+        }
+        let weighted = raw * prob;
+        weighted_total += weighted;
+        json!({ "stage": st.get("name").cloned().unwrap_or(json!("")), "count": n, "raw_value": raw, "weighted_value": weighted })
+    }).collect();
+
+    let won = rows(&query(json!({ "from": "opportunities", "filter": { "column": "status", "op": "eq", "value": "won" }, "select": ["id"], "limit": 5000 }))?).len() as i64;
+    let lost = rows(&query(json!({ "from": "opportunities", "filter": { "column": "status", "op": "eq", "value": "lost" }, "select": ["id"], "limit": 5000 }))?).len() as i64;
+    let win_rate = if won + lost > 0 { (won as f64) / ((won + lost) as f64) } else { 0.0 };
+
+    let leads_total = rows(&query(json!({ "from": "leads", "select": ["id"], "limit": 10000 }))?).len() as i64;
+    let leads_qualified = rows(&query(json!({ "from": "leads", "filter": { "column": "status", "op": "eq", "value": "qualified" }, "select": ["id"], "limit": 10000 }))?).len() as i64;
+
+    Ok(json!({
+        "weighted_total": weighted_total,
+        "by_stage": by_stage,
+        "won": won,
+        "lost": lost,
+        "win_rate": win_rate,
+        "funnel": { "leads": leads_total, "qualified": leads_qualified, "open_opportunities": open.len(), "won": won }
+    }))
+}
+
+// ── operational mutations (edit forms / quick actions) ──────────
+
+/// Apply a client `patch` to one row by id, RLS-scoped to the caller's tenant.
+/// Protected columns (tenant_id, id, audit) are stripped so a patch can never
+/// re-tenant a row or forge its identity.
+fn patch_table(table: &str, input: &Value) -> Result<Value, OpError> {
+    let id = s(input, "id").ok_or_else(|| OpError::BadRequest("id required".into()))?;
+    let mut patch = input.get("patch").cloned().unwrap_or(json!({}));
+    if let Some(obj) = patch.as_object_mut() {
+        for protected in ["id", "tenant_id", "created_at", "created_by", "last_modified_at", "last_modified_by"] {
+            obj.remove(protected);
+        }
+        if obj.is_empty() {
+            return Err(OpError::BadRequest("empty patch".into()));
+        }
+    }
+    let res = mutate(json!({
+        "table": table,
+        "op": "update",
+        "filter": { "column_equals": { "column": "id", "value": id } },
+        "patch": patch
+    }))?;
+    Ok(json!({ "committed": res.get("committed").and_then(|v| v.as_i64()).unwrap_or(0) }))
+}
+
+pub fn update_account(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> { patch_table("accounts", input) }
+pub fn update_contact(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> { patch_table("contacts", input) }
+pub fn update_opportunity(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> { patch_table("opportunities", input) }
+pub fn update_lead(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> { patch_table("leads", input) }
+
+/// Close a deal won or lost — a one-click operational action.
+pub fn close_opportunity(_ctx: &OpContext, input: &Value) -> Result<Value, OpError> {
+    let id = s(input, "id").ok_or_else(|| OpError::BadRequest("id required".into()))?;
+    let outcome = s(input, "outcome").unwrap_or("won");
+    let outcome = if outcome == "lost" { "lost" } else { "won" };
+    let res = mutate(json!({
+        "table": "opportunities",
+        "op": "update",
+        "filter": { "column_equals": { "column": "id", "value": id } },
+        "patch": { "status": outcome }
+    }))?;
+    Ok(json!({ "committed": res.get("committed").and_then(|v| v.as_i64()).unwrap_or(0) }))
+}
