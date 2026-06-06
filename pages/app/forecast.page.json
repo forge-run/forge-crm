@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "f": {
-      "query": "@op:crm::forecast",
+      "query": "@op:workspace::forecast",
       "params": {},
       "default": {
         "weighted_total": 0,

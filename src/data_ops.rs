@@ -74,18 +74,18 @@ fn insert_batch(table: &str, rows_in: Vec<Value>) -> Result<Vec<String>, OpError
 }
 
 /// Seed a private, pre-populated sample CRM for a freshly-created demo
-/// user. Everything is scoped to the caller's `tenant_id` (+ `owner_id`
-/// when the caller resolves to a real user). Each demo user (each signup
-/// mints its own tenant) gets an isolated copy they can edit freely.
-/// Fully resilient: every step logs and continues, so one bad insert
+/// user. Everything is scoped to the caller's `tenant_id`. Each demo user
+/// (each signup mints its own tenant) gets an isolated copy they can edit
+/// freely. Fully resilient: every step continues on error, so one bad insert
 /// never aborts the rest or blocks the dashboard render.
-fn seed_demo_data(ctx: &OpContext) -> String {
-    let tenant = match ctx.tenant_id.clone().filter(|t| !t.is_empty()) {
-        Some(t) => t,
-        None => return "no-tenant".to_string(),
-    };
-    let diag = std::cell::RefCell::new(vec![format!("uid={:?}", ctx.user_id)]);
-    let t = tenant.as_str();
+///
+/// `tenant_id` is supplied by the caller (resolved from the trusted session,
+/// not the browser) and stamped onto every row. It must be a real UUID: the
+/// column is `format: uuid` + `required`, so an empty/blank value fails
+/// validation and the insert commits nothing.
+fn seed_demo_data(tenant: &str) -> String {
+    let diag = std::cell::RefCell::new(Vec::<String>::new());
+    let t = tenant;
     // owner_id is optional metadata (RLS scopes records by tenant_id, not
     // owner), so leave it unset in the seed — the session subject's exact
     // shape can then never trip the column's format:uuid check.
@@ -96,8 +96,10 @@ fn seed_demo_data(ctx: &OpContext) -> String {
                 diag.borrow_mut().push(format!("{label}:{}", ids.len()));
                 ids
             }
-            Err(e) => {
-                diag.borrow_mut().push(format!("{label}:ERR({e:?})"));
+            Err(_) => {
+                // Best-effort: record and continue so one failed insert never
+                // aborts the rest of the seed or blocks the dashboard render.
+                diag.borrow_mut().push(format!("{label}:ERR"));
                 Vec::new()
             }
         }
@@ -148,16 +150,35 @@ fn seed_demo_data(ctx: &OpContext) -> String {
     diag.into_inner().join(" | ")
 }
 
-pub fn dashboard_summary(ctx: &OpContext, _input: &Value) -> Result<Value, OpError> {
+pub fn dashboard_summary(ctx: &OpContext, input: &Value) -> Result<Value, OpError> {
     // First-load seed: this is the demo workspace, so every user gets a
     // private, pre-populated CRM. Guarded on `pipeline_stages` (the first
-    // thing seeded) so it runs exactly once per tenant even if a later
-    // step fails. Best-effort — never blocks the dashboard render.
-    let seed_diag = if qrows(json!({ "from": "pipeline_stages", "select": ["id"], "limit": 1 })).is_empty() {
-        seed_demo_data(ctx)
-    } else {
-        "skipped".to_string()
-    };
+    // thing seeded) so it runs exactly once per tenant even if a later step
+    // fails. Best-effort — never blocks the dashboard render.
+    //
+    // This op is the dashboard's first-load data binding, so two things have to
+    // line up for the seed write to land:
+    //   1. the binding must address this op by its **service name** —
+    //      `@op:workspace::dashboard_summary`, not the namespace
+    //      (`@op:crm::…`). A wrong op-path silently resolves to the binding's
+    //      `default`, so the op (and its seed) never runs at all.
+    //   2. it must be a `mutation`-kind op — `query`-kind ops get a read-only
+    //      storage handle, so the seed's inserts are silently dropped.
+    //   3. every row needs a real `tenant_id` (the column is `format: uuid`,
+    //      `required`). We take it from the trusted session: `ctx.tenant_id`
+    //      first, falling back to the `$auth:tenant_id` binding param. If
+    //      neither resolves (caller has no tenant yet) the seed safely no-ops
+    //      rather than writing an empty string that fails uuid validation.
+    let tenant = ctx
+        .tenant_id
+        .clone()
+        .filter(|t| !t.is_empty())
+        .or_else(|| s(input, "tenant_id").map(str::to_string));
+    if let Some(tenant) = tenant {
+        if qrows(json!({ "from": "pipeline_stages", "select": ["id"], "limit": 1 })).is_empty() {
+            let _ = seed_demo_data(&tenant);
+        }
+    }
     let open = qrows(json!({
         "from": "opportunities",
         "filter": { "column": "status", "op": "eq", "value": "open" },
@@ -193,8 +214,7 @@ pub fn dashboard_summary(ctx: &OpContext, _input: &Value) -> Result<Value, OpErr
         "won_this_period": won.len(),
         "contacts_total": contacts.len(),
         "leads_open": leads_open.len(),
-        "recent_activities": recent,
-        "seed_diag": seed_diag
+        "recent_activities": recent
     }))
 }
 

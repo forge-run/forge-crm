@@ -1,6 +1,6 @@
 [package]
 name = "forge-crm"
-version = "0.1.0"
+version = "0.1.23"
 edition = "2021"
 publish = false
 description = "Forge CRM — the thin operations layer (storage-query wrappers the pages bind to). The application itself is the declarative config in schemas/ + pages/ + components/."

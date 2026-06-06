@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "rec": {
-      "query": "@op:crm::get_contact",
+      "query": "@op:workspace::get_contact",
       "params": {
         "id": "$path:id"
       },

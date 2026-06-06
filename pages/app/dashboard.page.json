@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "summary": {
-      "query": "@op:crm::dashboard_summary",
+      "query": "@op:workspace::dashboard_summary",
       "params": {},
       "default": {
         "open_opportunities": 0,

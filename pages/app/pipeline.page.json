@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "board": {
-      "query": "@op:crm::pipeline_board",
+      "query": "@op:workspace::pipeline_board",
       "params": {},
       "default": {
         "columns": []

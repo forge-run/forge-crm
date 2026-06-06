@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "work": {
-      "query": "@op:crm::my_work",
+      "query": "@op:workspace::my_work",
       "params": {},
       "default": {
         "rows": [],

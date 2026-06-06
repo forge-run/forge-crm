@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "rec": {
-      "query": "@op:crm::get_account",
+      "query": "@op:workspace::get_account",
       "params": {
         "id": "$path:id"
       },

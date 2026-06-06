@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "rec": {
-      "query": "@op:crm::get_opportunity",
+      "query": "@op:workspace::get_opportunity",
       "params": {
         "id": "$path:id"
       },

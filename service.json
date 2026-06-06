@@ -22,11 +22,15 @@
       "operations": [
         {
           "name": "dashboard_summary",
-          "kind": "query",
+          "kind": "mutation",
           "idempotency": "idempotent",
           "input_schema": {
             "type": "object",
-            "properties": {}
+            "properties": {
+              "tenant_id": {
+                "type": "string"
+              }
+            }
           },
           "output_schema": {
             "type": "object",

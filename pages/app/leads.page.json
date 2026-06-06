@@ -12,7 +12,7 @@
   "rendering": "BufferedHtml",
   "data": {
     "list": {
-      "query": "@op:crm::list_leads",
+      "query": "@op:workspace::list_leads",
       "params": {
         "status": "$param:status"
       },
