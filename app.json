@@ -54,8 +54,8 @@
   },
   "domains": {
     "hosts": {
-      "app.example.com": { "allowed_surfaces": ["app", "auth"] }
+      "demos.forge.run": { "allowed_surfaces": ["app", "auth"] }
     },
-    "canonical": { "app": "app.example.com", "auth": "app.example.com" }
+    "canonical": { "app": "demos.forge.run", "auth": "demos.forge.run" }
   }
 }
