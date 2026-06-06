@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "name": "index",
+  "route": { "method": "GET", "path": "/" },
+  "auth": "Anonymous",
+  "surface": ["app"],
+  "rendering": "BufferedHtml",
+  "data": {},
+  "template": { "kind": "Path", "path": "pages/anon/index.page.html" },
+  "title": "Forge Demos — own your software",
+  "description": "Live, agent-customizable, open-source replacements for Salesforce, ServiceNow, and Zendesk — running on Forge. Launch a working demo instantly; we spin up a private, populated copy just for you. Never locked in."
+}

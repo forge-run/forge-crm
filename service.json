@@ -12,23 +12,46 @@
         "activities"
       ],
       "permissions": [],
-      "surface": ["app"],
-      "limits": { "memory_mb": 32, "timeout_ms": 5000 },
+      "surface": [
+        "app"
+      ],
+      "limits": {
+        "memory_mb": 32,
+        "timeout_ms": 5000
+      },
       "operations": [
         {
           "name": "dashboard_summary",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": {} },
+          "input_schema": {
+            "type": "object",
+            "properties": {}
+          },
           "output_schema": {
             "type": "object",
             "properties": {
-              "open_opportunities": { "type": "integer" },
-              "open_pipeline_value": { "type": "number" },
-              "won_this_period": { "type": "integer" },
-              "contacts_total": { "type": "integer" },
-              "leads_open": { "type": "integer" },
-              "recent_activities": { "type": "array", "items": { "type": "object" } }
+              "open_opportunities": {
+                "type": "integer"
+              },
+              "open_pipeline_value": {
+                "type": "number"
+              },
+              "won_this_period": {
+                "type": "integer"
+              },
+              "contacts_total": {
+                "type": "integer"
+              },
+              "leads_open": {
+                "type": "integer"
+              },
+              "recent_activities": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
             }
           }
         },
@@ -36,35 +59,127 @@
           "name": "list_accounts",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "search": { "type": "string" } } },
-          "output_schema": { "type": "object", "properties": { "rows": { "type": "array", "items": { "type": "object" } }, "total": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "search": {
+                "type": "string"
+              }
+            }
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "list_contacts",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "search": { "type": "string" }, "account_id": { "type": "string" } } },
-          "output_schema": { "type": "object", "properties": { "rows": { "type": "array", "items": { "type": "object" } }, "total": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "search": {
+                "type": "string"
+              },
+              "account_id": {
+                "type": "string"
+              }
+            }
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "get_contact",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] },
-          "output_schema": { "type": "object", "properties": { "contact": { "type": "object" }, "account": { "type": "object" }, "activities": { "type": "array", "items": { "type": "object" } } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "contact": {
+                "type": "object"
+              },
+              "account": {
+                "type": "object"
+              },
+              "activities": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
         },
         {
           "name": "list_leads",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "status": { "type": "string" } } },
-          "output_schema": { "type": "object", "properties": { "rows": { "type": "array", "items": { "type": "object" } }, "total": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              }
+            }
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "pipeline_board",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": {} },
+          "input_schema": {
+            "type": "object",
+            "properties": {}
+          },
           "output_schema": {
             "type": "object",
             "properties": {
@@ -73,10 +188,21 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "stage": { "type": "object" },
-                    "opportunities": { "type": "array", "items": { "type": "object" } },
-                    "total_value": { "type": "number" },
-                    "count": { "type": "integer" }
+                    "stage": {
+                      "type": "object"
+                    },
+                    "opportunities": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "total_value": {
+                      "type": "number"
+                    },
+                    "count": {
+                      "type": "integer"
+                    }
                   }
                 }
               }
@@ -86,116 +212,553 @@
         {
           "name": "create_account",
           "kind": "mutation",
-          "idempotency": "none",
-          "input_schema": { "type": "object", "properties": { "name": { "type": "string" }, "domain": { "type": "string" }, "industry": { "type": "string" }, "type": { "type": "string" } }, "required": ["name"] },
-          "output_schema": { "type": "object", "properties": { "id": { "type": "string" }, "committed": { "type": "integer" } } }
+          "idempotency": "non_idempotent",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "domain": {
+                "type": "string"
+              },
+              "industry": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "create_contact",
           "kind": "mutation",
-          "idempotency": "none",
-          "input_schema": { "type": "object", "properties": { "first_name": { "type": "string" }, "last_name": { "type": "string" }, "email": { "type": "string" }, "phone": { "type": "string" }, "title": { "type": "string" }, "account_id": { "type": "string" } }, "required": ["first_name"] },
-          "output_schema": { "type": "object", "properties": { "id": { "type": "string" }, "committed": { "type": "integer" } } }
+          "idempotency": "non_idempotent",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "account_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "first_name"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "create_opportunity",
           "kind": "mutation",
-          "idempotency": "none",
-          "input_schema": { "type": "object", "properties": { "name": { "type": "string" }, "account_id": { "type": "string" }, "amount": { "type": "number" }, "stage_id": { "type": "string" }, "close_date": { "type": "string" } }, "required": ["name"] },
-          "output_schema": { "type": "object", "properties": { "id": { "type": "string" }, "committed": { "type": "integer" } } }
+          "idempotency": "non_idempotent",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "account_id": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "stage_id": {
+                "type": "string"
+              },
+              "close_date": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "move_opportunity",
           "kind": "mutation",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "stage_id": { "type": "string" } }, "required": ["id", "stage_id"] },
-          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "stage_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "stage_id"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "log_activity",
           "kind": "mutation",
-          "idempotency": "none",
-          "input_schema": { "type": "object", "properties": { "kind": { "type": "string" }, "subject": { "type": "string" }, "body": { "type": "string" }, "related_type": { "type": "string" }, "related_id": { "type": "string" }, "due_at": { "type": "string" } }, "required": ["subject"] },
-          "output_schema": { "type": "object", "properties": { "id": { "type": "string" }, "committed": { "type": "integer" } } }
+          "idempotency": "non_idempotent",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string"
+              },
+              "subject": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "related_type": {
+                "type": "string"
+              },
+              "related_id": {
+                "type": "string"
+              },
+              "due_at": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "subject"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "convert_lead",
           "kind": "mutation",
-          "idempotency": "none",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "create_opportunity": { "type": "boolean" } }, "required": ["id"] },
-          "output_schema": { "type": "object", "properties": { "contact_id": { "type": "string" }, "account_id": { "type": "string" }, "opportunity_id": { "type": "string" } } }
+          "idempotency": "non_idempotent",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "create_opportunity": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "contact_id": {
+                "type": "string"
+              },
+              "account_id": {
+                "type": "string"
+              },
+              "opportunity_id": {
+                "type": "string"
+              }
+            }
+          }
         },
         {
           "name": "get_account",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] },
-          "output_schema": { "type": "object", "properties": { "account": { "type": "object" }, "contacts": { "type": "array", "items": { "type": "object" } }, "opportunities": { "type": "array", "items": { "type": "object" } }, "activities": { "type": "array", "items": { "type": "object" } } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "account": {
+                "type": "object"
+              },
+              "contacts": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "opportunities": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "activities": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
         },
         {
           "name": "get_opportunity",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] },
-          "output_schema": { "type": "object", "properties": { "opportunity": { "type": "object" }, "account": { "type": "object" }, "stages": { "type": "array", "items": { "type": "object" } }, "activities": { "type": "array", "items": { "type": "object" } } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "opportunity": {
+                "type": "object"
+              },
+              "account": {
+                "type": "object"
+              },
+              "stages": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "activities": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
         },
         {
           "name": "list_opportunities",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "status": { "type": "string" }, "owner": { "type": "string" } } },
-          "output_schema": { "type": "object", "properties": { "rows": { "type": "array", "items": { "type": "object" } }, "total": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              }
+            }
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "my_work",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "owner_id": { "type": "string" } } },
-          "output_schema": { "type": "object", "properties": { "overdue": { "type": "array", "items": { "type": "object" } }, "today": { "type": "array", "items": { "type": "object" } }, "upcoming": { "type": "array", "items": { "type": "object" } } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "owner_id": {
+                "type": "string"
+              }
+            }
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "overdue": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "today": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "upcoming": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
         },
         {
           "name": "forecast",
           "kind": "query",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": {} },
-          "output_schema": { "type": "object", "properties": { "weighted_total": { "type": "number" }, "by_stage": { "type": "array", "items": { "type": "object" } }, "won": { "type": "integer" }, "lost": { "type": "integer" }, "win_rate": { "type": "number" }, "funnel": { "type": "object" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {}
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "weighted_total": {
+                "type": "number"
+              },
+              "by_stage": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "won": {
+                "type": "integer"
+              },
+              "lost": {
+                "type": "integer"
+              },
+              "win_rate": {
+                "type": "number"
+              },
+              "funnel": {
+                "type": "object"
+              }
+            }
+          }
         },
         {
           "name": "update_account",
           "kind": "mutation",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
-          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "patch": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "patch"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "update_contact",
           "kind": "mutation",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
-          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "patch": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "patch"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "update_opportunity",
           "kind": "mutation",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
-          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "patch": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "patch"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "update_lead",
           "kind": "mutation",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "patch": { "type": "object" } }, "required": ["id", "patch"] },
-          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "patch": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "patch"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         },
         {
           "name": "close_opportunity",
           "kind": "mutation",
           "idempotency": "idempotent",
-          "input_schema": { "type": "object", "properties": { "id": { "type": "string" }, "outcome": { "type": "string" } }, "required": ["id", "outcome"] },
-          "output_schema": { "type": "object", "properties": { "committed": { "type": "integer" } } }
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "outcome": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "outcome"
+            ]
+          },
+          "output_schema": {
+            "type": "object",
+            "properties": {
+              "committed": {
+                "type": "integer"
+              }
+            }
+          }
         }
       ]
+    }
+  ],
+  "wasm_modules": [
+    {
+      "service_namespace": "crm",
+      "service_name": "workspace",
+      "wasm_path": "target/wasm32-wasip1/release/forge_crm.wasm"
     }
   ]
 }

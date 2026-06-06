@@ -1,17 +1,30 @@
 {
   "schema_version": "0.1",
-  "name": "crm_accounts",
-  "route": { "method": "GET", "path": "/app/accounts" },
+  "name": "accounts",
+  "route": {
+    "method": "GET",
+    "path": "/app/accounts"
+  },
   "auth": "Authenticated",
-  "surface": ["app"],
+  "surface": [
+    "app"
+  ],
   "rendering": "BufferedHtml",
   "data": {
     "list": {
       "query": "@op:crm::list_accounts",
-      "params": { "search": "$param:q" },
-      "default": { "rows": [], "total": 0 }
+      "params": {
+        "search": "$param:q"
+      },
+      "default": {
+        "rows": [],
+        "total": 0
+      }
     }
   },
-  "template": { "kind": "Path", "path": "pages/app/accounts.page.html" },
-  "title": "Accounts — Forge CRM"
+  "template": {
+    "kind": "Path",
+    "path": "pages/app/accounts.page.html"
+  },
+  "title": "Accounts \u2014 Forge CRM"
 }

@@ -1,12 +1,20 @@
 {
   "schema_version": "0.1",
-  "name": "crm_contact_new",
-  "route": { "method": "GET", "path": "/app/contacts/new" },
+  "name": "contact_form",
+  "route": {
+    "method": "GET",
+    "path": "/app/contacts/new"
+  },
   "auth": "Authenticated",
-  "surface": ["app"],
+  "surface": [
+    "app"
+  ],
   "rendering": "BufferedHtml",
   "data": {},
-  "template": { "kind": "Path", "path": "pages/app/contact_form.page.html" },
-  "title": "New contact — Forge CRM",
-  "description": "Create a contact. The exemplar form pattern — account/opportunity/lead forms follow the same shape (POST to the matching create op)."
+  "template": {
+    "kind": "Path",
+    "path": "pages/app/contact_form.page.html"
+  },
+  "title": "New contact \u2014 Forge CRM",
+  "description": "Create a contact. The exemplar form pattern \u2014 account/opportunity/lead forms follow the same shape (POST to the matching create op)."
 }

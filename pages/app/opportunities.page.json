@@ -1,17 +1,30 @@
 {
   "schema_version": "0.1",
-  "name": "crm_opportunities",
-  "route": { "method": "GET", "path": "/app/opportunities" },
+  "name": "opportunities",
+  "route": {
+    "method": "GET",
+    "path": "/app/opportunities"
+  },
   "auth": "Authenticated",
-  "surface": ["app"],
+  "surface": [
+    "app"
+  ],
   "rendering": "BufferedHtml",
   "data": {
     "list": {
       "query": "@op:crm::list_opportunities",
-      "params": { "status": "$param:status" },
-      "default": { "rows": [], "total": 0 }
+      "params": {
+        "status": "$param:status"
+      },
+      "default": {
+        "rows": [],
+        "total": 0
+      }
     }
   },
-  "template": { "kind": "Path", "path": "pages/app/opportunities.page.html" },
-  "title": "Opportunities — Forge CRM"
+  "template": {
+    "kind": "Path",
+    "path": "pages/app/opportunities.page.html"
+  },
+  "title": "Opportunities \u2014 Forge CRM"
 }

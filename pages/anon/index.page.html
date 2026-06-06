@@ -1,0 +1,111 @@
+{# demos.forge.run — the demo catalog (anonymous). Each card is a Forge-config
+   replacement for an expensive incumbent. "Launch demo" provisions a throwaway
+   user (instant, zero-friction signup) and drops you into a private, pre-
+   populated copy of the app. Identity + sessions are the substrate's. #}
+<div class="dx">
+  <header class="dx__top">
+    <a class="dx__wm" href="/">FORGE<span class="period">.</span> <span class="dx__sub">DEMOS</span></a>
+    <a class="dx__toplink" href="https://forge.run">forge.run <span class="arrow">→</span></a>
+  </header>
+
+  <main class="dx__main">
+    <section class="dx__hero">
+      <p class="dx__eyebrow">Owned · Agent-customizable · Never locked in</p>
+      <h1 class="dx__title">The software you rent,<br>rebuilt as software you <em>own</em><span class="period">.</span></h1>
+      <p class="dx__lede">Open-source replacements for the incumbents — shipped as pure Forge configuration. Fork them, change anything with an agent, keep your data. Pick one below and we'll spin up a private, populated copy, just for you, in one click.</p>
+    </section>
+
+    <section class="dx__grid" aria-label="Available demos">
+      <article class="dx__card dx__card--live">
+        <div class="dx__card-head">
+          <span class="dx__badge dx__badge--live">Live demo</span>
+          <span class="dx__replaces">replaces Salesforce</span>
+        </div>
+        <h2 class="dx__card-title">Sales CRM</h2>
+        <p class="dx__card-desc">Accounts, contacts, a deal pipeline, an activity timeline, and a forecast — the core of a sales org, as declarative config with row-level security baked in.</p>
+        <ul class="dx__features">
+          <li>Pipeline &amp; opportunities</li>
+          <li>Accounts &amp; contacts</li>
+          <li>Activity tracking + forecast</li>
+        </ul>
+        <button id="launch-crm" class="dx__btn" type="button">Launch demo <span class="arrow">→</span></button>
+        <p id="launch-error" class="dx__err" role="alert"></p>
+      </article>
+
+      <article class="dx__card dx__card--soon">
+        <div class="dx__card-head">
+          <span class="dx__badge">Coming soon</span>
+          <span class="dx__replaces">replaces ServiceNow</span>
+        </div>
+        <h2 class="dx__card-title">IT Service Management</h2>
+        <p class="dx__card-desc">Incidents, change requests, a service catalog, and approval workflows — without the seven-figure license or the consultants.</p>
+        <ul class="dx__features">
+          <li>Incidents &amp; changes</li>
+          <li>Service catalog</li>
+          <li>Approvals &amp; SLAs</li>
+        </ul>
+        <button class="dx__btn dx__btn--ghost" type="button" disabled>In the forge</button>
+      </article>
+
+      <article class="dx__card dx__card--soon">
+        <div class="dx__card-head">
+          <span class="dx__badge">Coming soon</span>
+          <span class="dx__replaces">replaces Zendesk</span>
+        </div>
+        <h2 class="dx__card-title">Customer Support</h2>
+        <p class="dx__card-desc">Tickets, a shared inbox, macros, and a help center — your support desk, owned and customizable end to end.</p>
+        <ul class="dx__features">
+          <li>Tickets &amp; shared inbox</li>
+          <li>Macros &amp; SLAs</li>
+          <li>Help center</li>
+        </ul>
+        <button class="dx__btn dx__btn--ghost" type="button" disabled>In the forge</button>
+      </article>
+    </section>
+
+    <p class="dx__foot">Every demo runs on the Forge substrate — the same platform you'd build your own software on. <a href="https://forge.run" class="dx__link">See how Forge works →</a></p>
+  </main>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('launch-crm');
+  if (!btn) return;
+  var errEl = document.getElementById('launch-error');
+  var label = btn.innerHTML;
+  btn.addEventListener('click', function () {
+    btn.disabled = true;
+    btn.textContent = 'Spinning up your CRM…';
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('is-shown'); }
+    var rid = (window.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : (Date.now().toString(36) + Math.random().toString(36).slice(2));
+    var body = new URLSearchParams({
+      email: 'demo-' + rid + '@demo.forge.run',
+      password: 'Demo!' + rid + 'Aa9',
+      first_name: 'Demo',
+      last_name: 'User'
+    });
+    fetch('/api/v1/auth/signup', {
+      method: 'POST',
+      credentials: 'include',
+      redirect: 'manual',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (r) {
+      // A form signup 302-redirects to the post-auth URL (opaqueredirect under
+      // redirect:manual); a JSON signup returns 2xx. Either way the session
+      // cookie is set — go straight to the app.
+      if (r.type === 'opaqueredirect' || (r.status >= 200 && r.status < 400)) {
+        window.location.href = '/app';
+      } else {
+        return r.text().then(function (t) { throw new Error(t || ('HTTP ' + r.status)); });
+      }
+    }).catch(function (err) {
+      btn.disabled = false; btn.innerHTML = label;
+      if (errEl) { errEl.textContent = 'Could not start the demo — please try again.'; errEl.classList.add('is-shown'); }
+      if (window.console) console.error('demo launch failed:', err);
+    });
+  });
+})();
+</script>

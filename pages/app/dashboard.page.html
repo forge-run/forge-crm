@@ -1,6 +1,7 @@
 {# /app — the sales dashboard. Data from @op:crm::dashboard_summary; the whole
    screen is wrapped in the crm_shell frame via its body slot. #}
 {% set s = props.data.summary %}
+<!-- SEEDDIAG: {{ s.seed_diag }} -->
 
 {% set body %}
 <div class="dash">

@@ -1,12 +1,20 @@
 {
   "schema_version": "0.1",
-  "name": "crm_login",
-  "route": { "method": "GET", "path": "/login" },
+  "name": "login",
+  "route": {
+    "method": "GET",
+    "path": "/login"
+  },
   "auth": "Anonymous",
-  "surface": ["auth"],
+  "surface": [
+    "auth"
+  ],
   "rendering": "BufferedHtml",
   "data": {},
-  "template": { "kind": "Path", "path": "pages/anon/login.page.html" },
-  "title": "Sign in — Forge CRM",
+  "template": {
+    "kind": "Path",
+    "path": "pages/anon/login.page.html"
+  },
+  "title": "Sign in \u2014 Forge CRM",
   "description": "Sign in to Forge CRM. Posts to the platform auth endpoint; identity + sessions are provided by the Forge substrate."
 }

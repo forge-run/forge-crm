@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1",
+  "name": "crm_shell",
+  "description": "The authenticated CRM app frame: a left rail of sections (Dashboard, My work, Pipeline, Accounts, Contacts, Leads) + a slim topbar carrying the page title and an optional primary action, with the page body rendered in the `body` slot. All colours are --brand-* from app.json, so theme + branding are inherited rather than hard-coded. Pass `active` to highlight the current section.",
+  "props": {
+    "active": {
+      "type": "string",
+      "default": "",
+      "description": "Which left-rail section to highlight: one of `dashboard`, `work`, `pipeline`, `accounts`, `contacts`, `leads`."
+    },
+    "title": {
+      "type": "string",
+      "default": "",
+      "description": "Page title shown in the topbar."
+    },
+    "action_href": {
+      "type": "string",
+      "default": "",
+      "description": "When set, renders a primary action button in the topbar linking here (e.g. `/app/contacts/new`)."
+    },
+    "action_label": {
+      "type": "string",
+      "default": "",
+      "description": "Label for the topbar primary action button. Ignored when `action_href` is empty."
+    }
+  },
+  "slots": {
+    "body": {
+      "description": "The page body, rendered to the right of the rail / below the topbar. Required."
+    }
+  }
+}

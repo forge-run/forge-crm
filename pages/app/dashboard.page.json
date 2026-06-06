@@ -1,9 +1,14 @@
 {
   "schema_version": "0.1",
-  "name": "crm_dashboard",
-  "route": { "method": "GET", "path": "/app" },
+  "name": "dashboard",
+  "route": {
+    "method": "GET",
+    "path": "/app"
+  },
   "auth": "Authenticated",
-  "surface": ["app"],
+  "surface": [
+    "app"
+  ],
   "rendering": "BufferedHtml",
   "data": {
     "summary": {
@@ -19,7 +24,10 @@
       }
     }
   },
-  "template": { "kind": "Path", "path": "pages/app/dashboard.page.html" },
-  "title": "Dashboard — Forge CRM",
-  "description": "Sales dashboard — open pipeline value, deal counts, and recent activity."
+  "template": {
+    "kind": "Path",
+    "path": "pages/app/dashboard.page.html"
+  },
+  "title": "Dashboard \u2014 Forge CRM",
+  "description": "Sales dashboard \u2014 open pipeline value, deal counts, and recent activity."
 }

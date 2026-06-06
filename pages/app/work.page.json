@@ -1,18 +1,29 @@
 {
   "schema_version": "0.1",
-  "name": "crm_work",
-  "route": { "method": "GET", "path": "/app/work" },
+  "name": "work",
+  "route": {
+    "method": "GET",
+    "path": "/app/work"
+  },
   "auth": "Authenticated",
-  "surface": ["app"],
+  "surface": [
+    "app"
+  ],
   "rendering": "BufferedHtml",
   "data": {
     "work": {
       "query": "@op:crm::my_work",
       "params": {},
-      "default": { "rows": [], "total": 0 }
+      "default": {
+        "rows": [],
+        "total": 0
+      }
     }
   },
-  "template": { "kind": "Path", "path": "pages/app/work.page.html" },
-  "title": "My work — Forge CRM",
+  "template": {
+    "kind": "Path",
+    "path": "pages/app/work.page.html"
+  },
+  "title": "My work \u2014 Forge CRM",
   "description": "Your open tasks and follow-ups, soonest first."
 }

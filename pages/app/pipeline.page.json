@@ -1,18 +1,28 @@
 {
   "schema_version": "0.1",
-  "name": "crm_pipeline",
-  "route": { "method": "GET", "path": "/app/pipeline" },
+  "name": "pipeline",
+  "route": {
+    "method": "GET",
+    "path": "/app/pipeline"
+  },
   "auth": "Authenticated",
-  "surface": ["app"],
+  "surface": [
+    "app"
+  ],
   "rendering": "BufferedHtml",
   "data": {
     "board": {
       "query": "@op:crm::pipeline_board",
       "params": {},
-      "default": { "columns": [] }
+      "default": {
+        "columns": []
+      }
     }
   },
-  "template": { "kind": "Path", "path": "pages/app/pipeline.page.html" },
-  "title": "Pipeline — Forge CRM",
+  "template": {
+    "kind": "Path",
+    "path": "pages/app/pipeline.page.html"
+  },
+  "title": "Pipeline \u2014 Forge CRM",
   "description": "Your open opportunities, grouped by the pipeline stages you define."
 }
