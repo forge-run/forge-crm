@@ -1,0 +1,61 @@
+{
+  "schema_version": "0.1",
+  "app": {
+    "name": "forge-crm",
+    "version": "0.1.0",
+    "description": "Forge CRM — an open-source, agent-customizable CRM you own. Accounts, contacts, leads, a deal pipeline, and activity tracking, shipped as pure Forge configuration: declarative table schemas (with row-level security + a derived REST/MCP/WebSocket API), server-rendered pages, and a thin storage-wrapper operations layer. Fork it, run it on Forge, customize anything. Never locked in."
+  },
+  "shell": {},
+  "branding_overrides": {
+    "colors": {
+      "primary": "#e8894a",
+      "secondary": "#a78bfa",
+      "accent": "#f4a574",
+      "surface": "#161920",
+      "surface_alt": "#1c2028",
+      "foreground": "#ebe7df",
+      "foreground_muted": "#8e93a1",
+      "border": "#262a34",
+      "border_strong": "#353a47",
+      "danger": "#e8736a",
+      "success": "#6cc9a3",
+      "warning": "#e8894a"
+    },
+    "typography": {
+      "font_family": "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+      "font_family_mono": "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+      "font_size_base": "14px",
+      "line_height_base": "1.5"
+    },
+    "radius": { "sm": "4px", "md": "6px", "lg": "8px" },
+    "extra": {
+      "background": "#0c0d10",
+      "surface-3": "#232732",
+      "hairline": "rgba(255, 255, 255, 0.06)",
+      "foreground-faint": "#838997",
+      "ember-soft": "rgba(232, 137, 74, 0.10)",
+      "ember-glow": "rgba(232, 137, 74, 0.32)",
+      "signal-up": "#6cc9a3",
+      "signal-down": "#e8736a",
+      "ease-out": "cubic-bezier(0.22, 1, 0.36, 1)",
+      "duration-fast": "120ms",
+      "duration-normal": "220ms"
+    }
+  },
+  "routing_claim": {
+    "host": "@default",
+    "path": "/"
+  },
+  "tenant_claims": {},
+  "auth": {
+    "providers": ["password", "passkey", "oauth.google", "oauth.github"],
+    "passkey": { "attestation": "none", "allow_synced": true, "aal_min": "AAL1" },
+    "recovery": { "modes": ["email", "codes"], "code_count": 10 }
+  },
+  "domains": {
+    "hosts": {
+      "app.example.com": { "allowed_surfaces": ["app", "auth"] }
+    },
+    "canonical": { "app": "app.example.com", "auth": "app.example.com" }
+  }
+}

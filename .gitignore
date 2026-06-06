@@ -1,0 +1,33 @@
+# ── Build artifacts ───────────────────────────────────────────────
+/target
+**/*.rs.bk
+*.wasm
+Cargo.lock
+
+# ── Forge CLI credentials & local config (NEVER commit) ───────────
+.forge/
+forge.toml
+config.toml
+**/config.toml
+
+# ── Secrets & environment (NEVER commit) ──────────────────────────
+.env
+.env.*
+*.pem
+*.key
+*.secret
+secrets/
+**/credentials*
+
+# ── Customer / seed data dumps (keep real data out of the repo) ───
+*.csv
+*.dump
+*.sqlite
+data/local/
+
+# ── OS / editor noise ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

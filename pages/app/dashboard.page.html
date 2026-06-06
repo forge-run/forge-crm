@@ -1,0 +1,51 @@
+{# /app — the sales dashboard. Data from @op:crm::dashboard_summary; the whole
+   screen is wrapped in the crm_shell frame via its body slot. #}
+{% set s = props.data.summary %}
+
+{% set body %}
+<div class="dash">
+  <div class="dash__stats">
+    <div class="stat stat--ember">
+      <span class="stat__label">Open pipeline</span>
+      <span class="stat__value">${{ s.open_pipeline_value | int }}</span>
+      <span class="stat__sub">{{ s.open_opportunities }} open {{ "deal" if s.open_opportunities == 1 else "deals" }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Won</span>
+      <span class="stat__value">{{ s.won_this_period }}</span>
+      <span class="stat__sub">closed-won</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Contacts</span>
+      <span class="stat__value">{{ s.contacts_total }}</span>
+      <span class="stat__sub">people</span>
+    </div>
+    <div class="stat">
+      <span class="stat__label">Open leads</span>
+      <span class="stat__value">{{ s.leads_open }}</span>
+      <span class="stat__sub">to qualify</span>
+    </div>
+  </div>
+
+  <section class="dash__recent">
+    <div class="dash__head"><h2>Recent activity</h2><a href="/app/pipeline" class="dash__link">Open pipeline →</a></div>
+    {% if s.recent_activities %}
+      <ul class="timeline">
+        {% for a in s.recent_activities %}
+          <li class="timeline__row">
+            <span class="timeline__kind timeline__kind--{{ a.kind }}">{{ a.kind }}</span>
+            <span class="timeline__subject">{{ a.subject }}</span>
+            <span class="timeline__when">{{ a.created_at }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="dash__empty">
+        <p>No activity yet. Log a call, email, or note against any record and it lands here.</p>
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endset %}
+
+{{ component("crm_shell", {"active": "dashboard", "title": "Dashboard", "action_href": "/app/contacts", "action_label": "New contact"}, {"body": body}) }}

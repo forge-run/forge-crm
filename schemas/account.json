@@ -1,0 +1,39 @@
+{
+  "name": "accounts",
+  "archetype": "Record",
+  "label": "Account",
+  "description": "A company you sell to. The organization that contacts belong to and opportunities are won against.",
+  "api": {
+    "access": "read_write",
+    "filterable": ["type", "industry", "owner_id", "created_at"],
+    "sortable": ["name", "created_at", "annual_revenue"],
+    "default_sort": "created_at",
+    "default_sort_dir": "desc"
+  },
+  "columns": [
+    { "name": "tenant_id", "type": "string", "format": "uuid", "required": true, "label": "Tenant" },
+    { "name": "owner_id", "type": "string", "format": "uuid", "required": false, "label": "Owner" },
+    { "name": "name", "type": "string", "required": true, "maxLength": 200, "label": "Account name" },
+    { "name": "domain", "type": "string", "required": false, "maxLength": 200, "label": "Domain" },
+    { "name": "website", "type": "string", "required": false, "maxLength": 400, "label": "Website" },
+    { "name": "industry", "type": "string", "required": false, "enum": ["technology", "finance", "healthcare", "retail", "manufacturing", "media", "education", "government", "other"], "label": "Industry" },
+    { "name": "type", "type": "string", "required": false, "enum": ["prospect", "customer", "partner", "former_customer", "other"], "default": "prospect", "label": "Type" },
+    { "name": "employee_count", "type": "integer", "required": false, "min": 0, "label": "Employees" },
+    { "name": "annual_revenue", "type": "number", "required": false, "min": 0, "label": "Annual revenue" },
+    { "name": "phone", "type": "string", "required": false, "maxLength": 40, "label": "Phone" },
+    { "name": "billing_city", "type": "string", "required": false, "maxLength": 120, "label": "City" },
+    { "name": "billing_country", "type": "string", "required": false, "maxLength": 120, "label": "Country" },
+    { "name": "description", "type": "string", "required": false, "input_type": "textarea", "sanitize": "strip_html", "label": "Description" }
+  ],
+  "indexes": [
+    { "columns": ["tenant_id", "name"] },
+    { "columns": ["tenant_id", "owner_id"] }
+  ],
+  "row_security": [
+    {
+      "name": "tenant_isolation",
+      "filter": { "column": "tenant_id", "op": "eq", "value": "$claims.tenant_id" },
+      "scopes": ["select", "insert", "update", "delete"]
+    }
+  ]
+}

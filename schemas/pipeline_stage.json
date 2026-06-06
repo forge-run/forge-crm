@@ -1,0 +1,31 @@
+{
+  "name": "pipeline_stages",
+  "archetype": "Record",
+  "label": "Pipeline stage",
+  "description": "A stage in your sales pipeline. These are DATA, not hard-coded — rename them, reorder them, add your own. That's the point: your process, not the vendor's.",
+  "api": {
+    "access": "read_write",
+    "filterable": ["tenant_id"],
+    "sortable": ["position"],
+    "default_sort": "position",
+    "default_sort_dir": "asc"
+  },
+  "columns": [
+    { "name": "tenant_id", "type": "string", "format": "uuid", "required": true, "label": "Tenant" },
+    { "name": "name", "type": "string", "required": true, "maxLength": 80, "label": "Stage name" },
+    { "name": "position", "type": "integer", "required": true, "min": 0, "label": "Order" },
+    { "name": "probability", "type": "integer", "required": false, "default": 0, "min": 0, "max": 100, "label": "Win probability %" },
+    { "name": "is_won", "type": "boolean", "required": false, "default": false, "label": "Closed-won stage" },
+    { "name": "is_lost", "type": "boolean", "required": false, "default": false, "label": "Closed-lost stage" }
+  ],
+  "indexes": [
+    { "columns": ["tenant_id", "position"] }
+  ],
+  "row_security": [
+    {
+      "name": "tenant_isolation",
+      "filter": { "column": "tenant_id", "op": "eq", "value": "$claims.tenant_id" },
+      "scopes": ["select", "insert", "update", "delete"]
+    }
+  ]
+}

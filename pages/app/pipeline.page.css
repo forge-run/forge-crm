@@ -1,0 +1,28 @@
+/* /app/pipeline — scoped under [data-page="crm_pipeline"]. A horizontal board
+   of stage columns; cards are the open opportunities. */
+.pipe { max-width: 100%; }
+.pipe__cols { display: flex; gap: 16px; align-items: flex-start; overflow-x: auto; padding-bottom: 12px; }
+
+.pipe-col { flex: 0 0 268px; display: flex; flex-direction: column; border-radius: 14px;
+  border: 1px solid var(--brand-border); background: color-mix(in srgb, var(--brand-surface) 38%, var(--brand-background)); }
+.pipe-col__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  padding: 14px 16px; border-bottom: 1px solid var(--hairline); }
+.pipe-col__name { font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brand-foreground); }
+.pipe-col__meta { font-size: 11.5px; color: var(--brand-foreground-faint); font-feature-settings: 'tnum' 1; white-space: nowrap; }
+.pipe-col__cards { display: flex; flex-direction: column; gap: 10px; padding: 12px; min-height: 80px; }
+
+.opp { display: flex; flex-direction: column; gap: 10px; padding: 13px 14px; border-radius: 11px;
+  border: 1px solid var(--brand-border); background: var(--brand-background); text-decoration: none; color: inherit;
+  transition: border-color var(--brand-duration-fast, 120ms) var(--brand-ease-out), transform var(--brand-duration-fast, 120ms) var(--brand-ease-out); }
+.opp:hover { border-color: var(--brand-ember-mid, rgba(232,137,74,0.34)); transform: translateY(-2px); }
+.opp__name { font-size: 14px; font-weight: 500; line-height: 1.3; color: var(--brand-foreground); }
+.opp__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.opp__amt { font-size: 14px; font-weight: 600; color: var(--brand-primary); font-feature-settings: 'tnum' 1; }
+.opp__date { font-size: 11.5px; color: var(--brand-foreground-faint); font-feature-settings: 'tnum' 1; }
+.opp--empty { color: var(--brand-foreground-faint); font-size: 12.5px; text-align: center; padding: 18px 14px; border-style: dashed; background: transparent; }
+
+.pipe__empty { max-width: 560px; margin: 40px auto; text-align: center; padding: 40px 32px;
+  border: 1px dashed var(--brand-border); border-radius: 16px; }
+.pipe__empty h2 { font-family: var(--font-serif, Georgia, serif); font-weight: 400; font-size: 26px; margin: 0 0 12px; color: var(--brand-foreground); }
+.pipe__empty p { font-size: 14.5px; line-height: 1.6; color: var(--brand-foreground-muted); margin: 0; }
+.pipe__empty code { font-family: var(--font-code, monospace); font-size: 13px; color: var(--brand-primary); }

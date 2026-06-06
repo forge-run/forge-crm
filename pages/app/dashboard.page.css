@@ -1,0 +1,30 @@
+/* /app dashboard — scoped under [data-page="crm_dashboard"]. */
+.dash { display: flex; flex-direction: column; gap: clamp(20px, 3vh, 34px); max-width: 1100px; }
+
+.dash__stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.stat { display: flex; flex-direction: column; gap: 6px; padding: 20px; border-radius: 14px;
+  border: 1px solid var(--brand-border); background: color-mix(in srgb, var(--brand-surface) 40%, var(--brand-background)); }
+.stat--ember { border-color: var(--brand-ember-mid, rgba(232,137,74,0.34));
+  background: linear-gradient(160deg, var(--brand-ember-soft), transparent 60%), color-mix(in srgb, var(--brand-surface) 40%, var(--brand-background)); }
+.stat__label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand-foreground-faint); }
+.stat__value { font-family: var(--font-serif, Georgia, serif); font-weight: 400; font-size: 38px; line-height: 1; letter-spacing: -0.02em; color: var(--brand-foreground); font-feature-settings: 'tnum' 1; }
+.stat--ember .stat__value { color: var(--brand-primary); }
+.stat__sub { font-size: 12.5px; color: var(--brand-foreground-muted); }
+
+.dash__head { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid var(--hairline); margin-bottom: 16px; }
+.dash__head h2 { font-family: var(--font-serif, Georgia, serif); font-weight: 400; font-size: 22px; letter-spacing: -0.01em; margin: 0; color: var(--brand-foreground); }
+.dash__link { font-size: 13px; font-weight: 600; color: var(--brand-primary); text-decoration: none; }
+
+.timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.timeline__row { display: flex; align-items: center; gap: 14px; padding: 11px 4px; border-bottom: 1px solid var(--hairline); }
+.timeline__kind { flex: none; width: 64px; text-align: center; font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 0; border-radius: 6px; background: var(--brand-ember-soft); color: var(--brand-primary); }
+.timeline__kind--call { background: rgba(122,167,255,0.14); color: #7aa7ff; }
+.timeline__kind--meeting { background: rgba(167,139,250,0.16); color: #a78bfa; }
+.timeline__kind--task { background: rgba(108,201,163,0.16); color: var(--brand-success, #6cc9a3); }
+.timeline__subject { flex: 1; font-size: 14px; color: var(--brand-foreground); }
+.timeline__when { font-size: 12px; color: var(--brand-foreground-faint); }
+
+.dash__empty { padding: 36px; text-align: center; border: 1px dashed var(--brand-border); border-radius: 14px; color: var(--brand-foreground-muted); font-size: 14px; }
+
+@media (max-width: 860px) { .dash__stats { grid-template-columns: 1fr 1fr; } }

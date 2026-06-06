@@ -1,0 +1,38 @@
+{
+  "name": "opportunities",
+  "archetype": "Record",
+  "label": "Opportunity",
+  "description": "A deal in flight — an amount, a close date, and a stage it's moving through. The thing the whole CRM exists to close.",
+  "api": {
+    "access": "read_write",
+    "filterable": ["account_id", "stage_id", "status", "owner_id", "close_date", "created_at"],
+    "sortable": ["close_date", "amount", "created_at"],
+    "default_sort": "close_date",
+    "default_sort_dir": "asc"
+  },
+  "columns": [
+    { "name": "tenant_id", "type": "string", "format": "uuid", "required": true, "label": "Tenant" },
+    { "name": "owner_id", "type": "string", "format": "uuid", "required": false, "label": "Owner" },
+    { "name": "name", "type": "string", "required": true, "maxLength": 200, "label": "Opportunity name" },
+    { "name": "account_id", "type": "string", "format": "uuid", "required": false, "references": { "table": "accounts", "column": "id", "on_delete": "set_null" }, "label": "Account" },
+    { "name": "stage_id", "type": "string", "format": "uuid", "required": false, "references": { "table": "pipeline_stages", "column": "id", "on_delete": "set_null" }, "label": "Stage" },
+    { "name": "amount", "type": "number", "required": false, "min": 0, "label": "Amount" },
+    { "name": "currency", "type": "string", "required": false, "maxLength": 3, "default": "USD", "label": "Currency" },
+    { "name": "status", "type": "string", "required": false, "enum": ["open", "won", "lost"], "default": "open", "label": "Status" },
+    { "name": "probability", "type": "integer", "required": false, "min": 0, "max": 100, "label": "Probability %" },
+    { "name": "close_date", "type": "string", "format": "date", "required": false, "label": "Expected close" },
+    { "name": "description", "type": "string", "required": false, "input_type": "textarea", "sanitize": "strip_html", "label": "Description" }
+  ],
+  "indexes": [
+    { "columns": ["tenant_id", "stage_id"] },
+    { "columns": ["tenant_id", "status"] },
+    { "columns": ["tenant_id", "account_id"] }
+  ],
+  "row_security": [
+    {
+      "name": "tenant_isolation",
+      "filter": { "column": "tenant_id", "op": "eq", "value": "$claims.tenant_id" },
+      "scopes": ["select", "insert", "update", "delete"]
+    }
+  ]
+}

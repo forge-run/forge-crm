@@ -1,0 +1,40 @@
+{# /app/pipeline — open opportunities grouped by the tenant's own pipeline
+   stages. Data from @op:crm::pipeline_board. #}
+{% set cols = props.data.board.columns %}
+
+{% set body %}
+<div class="pipe">
+  {% if cols %}
+  <div class="pipe__cols">
+    {% for c in cols %}
+    <section class="pipe-col">
+      <header class="pipe-col__head">
+        <span class="pipe-col__name">{{ c.stage.name }}</span>
+        <span class="pipe-col__meta">{{ c.count }} · ${{ c.total_value | default(0) | int }}</span>
+      </header>
+      <div class="pipe-col__cards">
+        {% for o in c.opportunities %}
+        <article class="opp">
+          <span class="opp__name">{{ o.name }}</span>
+          <span class="opp__foot">
+            <span class="opp__amt">${{ o.amount | default(0) | int }}</span>
+            {% if o.close_date %}<span class="opp__date">{{ o.close_date }}</span>{% endif %}
+          </span>
+        </article>
+        {% else %}
+        <div class="opp opp--empty">No deals in this stage</div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="pipe__empty">
+    <h2>No pipeline yet</h2>
+    <p>Pipeline stages are <em>your</em> data — create a few (e.g. Discovery → Proposal → Negotiation → Closed Won) and your open opportunities will lay out here as a board. Add them in <code>pipeline_stages</code>, or let an agent set up a standard sales process for you.</p>
+  </div>
+  {% endif %}
+</div>
+{% endset %}
+
+{{ component("crm_shell", {"active": "pipeline", "title": "Pipeline", "action_href": "/app/accounts", "action_label": "New deal"}, {"body": body}) }}

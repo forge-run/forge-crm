@@ -1,0 +1,35 @@
+{
+  "name": "activities",
+  "archetype": "Record",
+  "label": "Activity",
+  "description": "A logged interaction — a call, email, meeting, note, or task — attached to any record (account, contact, lead, or opportunity). The timeline of what actually happened.",
+  "api": {
+    "access": "read_write",
+    "filterable": ["kind", "related_type", "related_id", "completed", "owner_id", "due_at", "created_at"],
+    "sortable": ["due_at", "created_at"],
+    "default_sort": "created_at",
+    "default_sort_dir": "desc"
+  },
+  "columns": [
+    { "name": "tenant_id", "type": "string", "format": "uuid", "required": true, "label": "Tenant" },
+    { "name": "owner_id", "type": "string", "format": "uuid", "required": false, "label": "Owner" },
+    { "name": "kind", "type": "string", "required": true, "enum": ["call", "email", "meeting", "note", "task"], "default": "note", "label": "Kind" },
+    { "name": "subject", "type": "string", "required": true, "maxLength": 280, "label": "Subject" },
+    { "name": "body", "type": "string", "required": false, "input_type": "textarea", "sanitize": "strip_html", "label": "Details" },
+    { "name": "related_type", "type": "string", "required": false, "enum": ["account", "contact", "lead", "opportunity"], "label": "Related to" },
+    { "name": "related_id", "type": "string", "format": "uuid", "required": false, "label": "Related record" },
+    { "name": "due_at", "type": "string", "format": "date-time", "required": false, "label": "Due / scheduled" },
+    { "name": "completed", "type": "boolean", "required": false, "default": false, "label": "Completed" }
+  ],
+  "indexes": [
+    { "columns": ["tenant_id", "related_type", "related_id"] },
+    { "columns": ["tenant_id", "owner_id", "completed"] }
+  ],
+  "row_security": [
+    {
+      "name": "tenant_isolation",
+      "filter": { "column": "tenant_id", "op": "eq", "value": "$claims.tenant_id" },
+      "scopes": ["select", "insert", "update", "delete"]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "0.1",
+  "name": "crm_dashboard",
+  "route": { "method": "GET", "path": "/app" },
+  "auth": "Authenticated",
+  "surface": ["app"],
+  "rendering": "BufferedHtml",
+  "data": {
+    "summary": {
+      "query": "@op:crm::dashboard_summary",
+      "params": {},
+      "default": {
+        "open_opportunities": 0,
+        "open_pipeline_value": 0,
+        "won_this_period": 0,
+        "contacts_total": 0,
+        "leads_open": 0,
+        "recent_activities": []
+      }
+    }
+  },
+  "template": { "kind": "Path", "path": "pages/app/dashboard.page.html" },
+  "title": "Dashboard — Forge CRM",
+  "description": "Sales dashboard — open pipeline value, deal counts, and recent activity."
+}
