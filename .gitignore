@@ -2,7 +2,11 @@
 /target
 **/*.rs.bk
 *.wasm
-Cargo.lock
+# Cargo.lock is COMMITTED, deliberately — this is an application (cdylib →
+# wasm) with no dependents, not a library. forge.lock pins the deployed wasm
+# BY HASH, so a floating Cargo.lock would let one git commit resolve
+# different dependency versions and produce a different hash, breaking the
+# premise that a hash identifies the code.
 
 # ── Forge CLI credentials & local config (NEVER commit) ───────────
 .forge/
