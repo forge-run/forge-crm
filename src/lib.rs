@@ -3,9 +3,24 @@
 //! The application is declarative: tables in `schemas/`, UI in `pages/` +
 //! `components/`. This crate exists only because page-data bindings resolve
 //! through `@op:crm::<name>` operations — so each page-read and each mutation
-//! is a small handler here that wraps `storage::query` / `storage::mutate`.
+//! is a small handler that wraps `storage::query` / `storage::mutate`.
 //! There is no business logic worth hiding: row-level security (declared in
 //! the schemas) does the enforcement; these handlers just shape payloads.
+//!
+//! **The handlers are written in the forge-lang dialect** (`ops/*.java`), not
+//! in Rust. `src/jgen` is their emitted Rust, committed so a plain
+//! `cargo build` needs no transpiler; regenerate it in the SAME commit as any
+//! `ops/` change with
+//!
+//! ```text
+//! forge-lang build ops/*.java --module-out src/jgen --source-root .
+//! ```
+//!
+//! Four ops are still raw Rust in [`data_ops`], blocked on ONE missing band
+//! entry — the dialect has no float read out of a JSON value (`GetKind` is
+//! Str/Int/Bool/IntOrNone/List/Dict, and a `.get(k, 0.0)` is `FL2033`). Every
+//! one of the four sums or scales a `number` column: `amount`,
+//! `annual_revenue`, `probability`. See `HS-9` in the host-surface roadmap.
 //!
 //! The Guest contract mirrors forge-portal-web: the runtime re-invokes this
 //! wasm with `ctx.op_name` set to the bound op; we branch on it and return a
@@ -14,6 +29,12 @@
 
 #[cfg(target_arch = "wasm32")]
 use forge_sdk_v2::{Guest, OpContext, OpError, OpInput, OpOutput, Response};
+
+mod jgen;
+
+// The emitted module's ops spell `crate::fault::...` exactly as they do in
+// an all-dialect crate; this re-export is what resolves it here.
+pub(crate) use jgen::fault;
 
 // Declarative pages (pages/**/*.page.{json,html,css}) register at link time
 // via the codegen build.rs emits into OUT_DIR.
@@ -41,38 +62,23 @@ mod component_export {
             }
 
             let json = match ctx.op_name.as_str() {
-                // queries (page data bindings) — reads scope to the caller's
-                // tenant automatically via the schema's row_security.
+                // The four ops the dialect cannot yet spell (a float read out
+                // of a JSON value). Everything else is `ops/*.java`, served
+                // from the emitted `jgen` module below.
                 "dashboard_summary" => data_op!(crate::data_ops::dashboard_summary),
-                "list_accounts"     => data_op!(crate::data_ops::list_accounts),
-                "list_contacts"     => data_op!(crate::data_ops::list_contacts),
-                "get_contact"       => data_op!(crate::data_ops::get_contact),
-                "get_account"       => data_op!(crate::data_ops::get_account),
-                "get_opportunity"   => data_op!(crate::data_ops::get_opportunity),
-                "list_leads"        => data_op!(crate::data_ops::list_leads),
-                "list_opportunities"=> data_op!(crate::data_ops::list_opportunities),
                 "pipeline_board"    => data_op!(crate::data_ops::pipeline_board),
-                "my_work"           => data_op!(crate::data_ops::my_work),
                 "forecast"          => data_op!(crate::data_ops::forecast),
-                // mutations (form / htmx POSTs)
-                "create_account"     => data_op!(crate::data_ops::create_account),
-                "create_contact"     => data_op!(crate::data_ops::create_contact),
-                "create_opportunity" => data_op!(crate::data_ops::create_opportunity),
-                "update_account"     => data_op!(crate::data_ops::update_account),
-                "update_contact"     => data_op!(crate::data_ops::update_contact),
-                "update_opportunity" => data_op!(crate::data_ops::update_opportunity),
-                "update_lead"        => data_op!(crate::data_ops::update_lead),
-                "move_opportunity"   => data_op!(crate::data_ops::move_opportunity),
-                "close_opportunity"  => data_op!(crate::data_ops::close_opportunity),
-                "log_activity"       => data_op!(crate::data_ops::log_activity),
-                "convert_lead"       => data_op!(crate::data_ops::convert_lead),
-                // anything else is a page route → the SSR page dispatcher.
-                _ => {
-                    let response = dispatch(&ctx, &parsed)
-                        .map_err(|e| OpError::Internal(format!("dispatch: {e}")))?;
-                    serde_json::to_string(&response)
-                        .map_err(|e| OpError::Internal(format!("encode response: {e}")))?
-                }
+                "create_opportunity"=> data_op!(crate::data_ops::create_opportunity),
+                // The dialect ops, then the SSR page dispatcher for routes.
+                other => match crate::jgen::dispatch(other, &input.json, ctx.user_id.clone()) {
+                    Some(r) => r?,
+                    None => {
+                        let response = dispatch(&ctx, &parsed)
+                            .map_err(|e| OpError::Internal(format!("dispatch: {e}")))?;
+                        serde_json::to_string(&response)
+                            .map_err(|e| OpError::Internal(format!("encode response: {e}")))?
+                    }
+                },
             };
             Ok(OpOutput { json })
         }

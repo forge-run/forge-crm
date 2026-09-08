@@ -19,6 +19,12 @@ crate-type = ["cdylib", "rlib"]
 # crates (crates.io) or a git dependency, e.g.:
 #   forge-sdk-v2 = { git = "https://github.com/forge-run/forge-sdk", tag = "v2" }
 forge-sdk-v2 = { path = "../forge-sdk-v2" }
+# The dialect runtime the emitted `src/jgen` module links. The 18 ops in
+# `ops/*.java` are the app's operations layer; `jgen` is their emitted Rust,
+# regenerated with `forge-lang build ops/*.java --module-out src/jgen
+# --source-root .` and COMMITTED, so a plain `cargo build` needs no
+# transpiler on the machine.
+forge-lang-rt = { path = "../forge-lang/crates/forge-lang-rt", features = ["sdk"] }
 forge-web    = { path = "../forge-web/core" }
 forge-schema = { path = "../forge-schema" }
 
