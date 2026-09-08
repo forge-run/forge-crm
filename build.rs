@@ -7,7 +7,9 @@
 //!   4. concatenate + minify the page/component CSS into static/app.<hash>.css
 //!
 //! service.json op schemas are hand-authored here (unlike the portal, which
-//! derives them from typed Rust structs) — keep them in sync with src/data_ops.rs by hand.
+//! derives them from typed Rust structs) — keep them in sync with `ops/*.java`
+//! by hand. They used to name src/data_ops.rs; HS-9 deleted that file when the
+//! last four op bodies became dialect sources.
 
 use std::path::PathBuf;
 
