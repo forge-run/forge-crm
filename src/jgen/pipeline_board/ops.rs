@@ -41,7 +41,7 @@ pub fn column(stage: Value, opps: Vec<Value>) -> Result<BoardColumn, OpFault> {
         }
         __out
     };
-    let mut total: f64 = 0.0f64;
+    let mut total: f64 = -0.0f64;
     for o in in_stage.clone() {
         total = convert::as_float(
             &(Value::float(total))
@@ -52,13 +52,13 @@ pub fn column(stage: Value, opps: Vec<Value>) -> Result<BoardColumn, OpFault> {
                             &Value::str("amount"),
                             &Value::float(0.0f64),
                         )
-                        .at(42)?,
+                        .at(49)?,
                     )
-                    .at(42)?,
+                    .at(49)?,
                 ))
-                .at(42)?,
+                .at(49)?,
         )
-        .at(42)?;
+        .at(49)?;
     }
     return Ok(BoardColumn {
         stage: stage.clone(),
@@ -89,11 +89,11 @@ pub fn pipelineBoard(
                     ),
                     ("limit", Value::int(50i64)),
                 ]))
-                .at(49)?,
+                .at(56)?,
         )
-        .at(49)?,
+        .at(56)?,
     )
-    .at(49)?;
+    .at(56)?;
     let opps: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -126,11 +126,11 @@ pub fn pipelineBoard(
                     ),
                     ("limit", Value::int(1000i64)),
                 ]))
-                .at(54)?,
+                .at(61)?,
         )
-        .at(54)?,
+        .at(61)?,
     )
-    .at(54)?;
+    .at(61)?;
     return Ok(PipelineBoardOutput {
         columns: {
             let mut __out = Vec::new();

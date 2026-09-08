@@ -47,6 +47,12 @@ public final class Forecast {
     private static StageRoll roll(Value st, List<Value> open) {
         String sid = st.get("id", "");
         double prob = st.get("probability", 0.0) / 100.0;
+        // `0.0` here and `-0.0` in dashboard_summary / pipeline_board, and
+        // the difference is the Rust's: this op accumulated in an explicit
+        // `let mut raw = 0.0_f64;` loop where those two called
+        // `Iterator::sum::<f64>()`, which folds from NEGATIVE zero. Two
+        // spellings of the same sum in the same crate, answering differently
+        // on the empty case; the transposition copies each one.
         double raw = 0.0;
         long n = 0L;
         for (Value o : open) {

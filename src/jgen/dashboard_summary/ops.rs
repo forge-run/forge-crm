@@ -53,7 +53,7 @@ pub fn dashboardSummary(
         .at(51)?,
     )
     .at(51)?;
-    let mut pipeline_value: f64 = 0.0f64;
+    let mut pipeline_value: f64 = -0.0f64;
     for o in open.clone() {
         pipeline_value = convert::as_float(
             &(Value::float(pipeline_value))
@@ -64,13 +64,13 @@ pub fn dashboardSummary(
                             &Value::str("amount"),
                             &Value::float(0.0f64),
                         )
-                        .at(59)?,
+                        .at(66)?,
                     )
-                    .at(59)?,
+                    .at(66)?,
                 ))
-                .at(59)?,
+                .at(66)?,
         )
-        .at(59)?;
+        .at(66)?;
     }
     let won: Vec<Value> = convert::as_list(
         &storage::rows(
@@ -88,11 +88,11 @@ pub fn dashboardSummary(
                     ("select", Value::list(vec![Value::str("id")])),
                     ("limit", Value::int(1000i64)),
                 ]))
-                .at(61)?,
+                .at(68)?,
         )
-        .at(61)?,
+        .at(68)?,
     )
-    .at(61)?;
+    .at(68)?;
     let contacts: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -101,11 +101,11 @@ pub fn dashboardSummary(
                     ("select", Value::list(vec![Value::str("id")])),
                     ("limit", Value::int(5000i64)),
                 ]))
-                .at(67)?,
+                .at(74)?,
         )
-        .at(67)?,
+        .at(74)?,
     )
-    .at(67)?;
+    .at(74)?;
     let leads_open: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -122,11 +122,11 @@ pub fn dashboardSummary(
                     ("select", Value::list(vec![Value::str("id")])),
                     ("limit", Value::int(5000i64)),
                 ]))
-                .at(72)?,
+                .at(79)?,
         )
-        .at(72)?,
+        .at(79)?,
     )
-    .at(72)?;
+    .at(79)?;
     let recent: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -141,11 +141,11 @@ pub fn dashboardSummary(
                     ),
                     ("limit", Value::int(8i64)),
                 ]))
-                .at(78)?,
+                .at(85)?,
         )
-        .at(78)?,
+        .at(85)?,
     )
-    .at(78)?;
+    .at(85)?;
     return Ok(DashboardSummaryOutput {
         open_opportunities: open.clone().len() as i64,
         open_pipeline_value: pipeline_value,
@@ -154,8 +154,8 @@ pub fn dashboardSummary(
         leads_open: leads_open.clone().len() as i64,
         recent_activities: recent.clone(),
         seed_diag: convert::as_str(
-            &library::get_str(&input.clone(), &Value::str("seed_diag"), &Value::str("")).at(90)?,
+            &library::get_str(&input.clone(), &Value::str("seed_diag"), &Value::str("")).at(97)?,
         )
-        .at(90)?,
+        .at(97)?,
     });
 }

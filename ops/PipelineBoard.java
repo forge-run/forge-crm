@@ -37,7 +37,14 @@ public final class PipelineBoard {
         List<Value> in_stage = opps.stream()
             .filter(o -> o.get("stage_id", "").equals(sid))
             .toList();
-        double total = 0.0;
+        // `-0.0`, not `0.0`, and it is not a typo. Rust's
+        // `Iterator::sum::<f64>()` folds from NEGATIVE zero — the identity
+        // that is exact for every operand including `-0.0` itself — so the
+        // Rust this replaces answered `-0.0` for a stage with no deals, and
+        // serde writes that to the wire as `-0.0`. An accumulator seeded at
+        // `0.0` agrees on every non-empty sum and parts on exactly the empty
+        // one, which is what the CRM swap gate caught on `Closed Won`.
+        double total = -0.0;
         for (Value o : in_stage) {
             total = total + o.get("amount", 0.0);
         }

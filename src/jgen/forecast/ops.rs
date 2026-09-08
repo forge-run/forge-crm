@@ -46,9 +46,9 @@ pub fn roll(st: Value, open: Vec<Value>) -> Result<StageRoll, OpFault> {
     let mut n: i64 = 0i64;
     for o in open.clone() {
         if convert::as_str(
-            &library::get_str(&o.clone(), &Value::str("stage_id"), &Value::str("")).at(53)?,
+            &library::get_str(&o.clone(), &Value::str("stage_id"), &Value::str("")).at(59)?,
         )
-        .at(53)?
+        .at(59)?
             == sid.clone()
         {
             raw = convert::as_float(
@@ -60,25 +60,25 @@ pub fn roll(st: Value, open: Vec<Value>) -> Result<StageRoll, OpFault> {
                                 &Value::str("amount"),
                                 &Value::float(0.0f64),
                             )
-                            .at(54)?,
+                            .at(60)?,
                         )
-                        .at(54)?,
+                        .at(60)?,
                     ))
-                    .at(54)?,
+                    .at(60)?,
             )
-            .at(54)?;
-            n = convert::as_int(&(Value::int(n)).add(&Value::int(1i64)).at(55)?).at(55)?;
+            .at(60)?;
+            n = convert::as_int(&(Value::int(n)).add(&Value::int(1i64)).at(61)?).at(61)?;
         }
     }
     return Ok(StageRoll {
         stage: convert::as_str(
-            &library::get_str(&st.clone(), &Value::str("name"), &Value::str("")).at(63)?,
+            &library::get_str(&st.clone(), &Value::str("name"), &Value::str("")).at(69)?,
         )
-        .at(63)?,
+        .at(69)?,
         count: n,
         raw_value: raw,
-        weighted_value: convert::as_float(&(Value::float(raw)).mul(&Value::float(prob)).at(63)?)
-            .at(63)?,
+        weighted_value: convert::as_float(&(Value::float(raw)).mul(&Value::float(prob)).at(69)?)
+            .at(69)?,
     });
 }
 
@@ -103,11 +103,11 @@ pub fn forecast(
                     ),
                     ("limit", Value::int(50i64)),
                 ]))
-                .at(68)?,
+                .at(74)?,
         )
-        .at(68)?,
+        .at(74)?,
     )
-    .at(68)?;
+    .at(74)?;
     let open: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -131,11 +131,11 @@ pub fn forecast(
                     ),
                     ("limit", Value::int(2000i64)),
                 ]))
-                .at(73)?,
+                .at(79)?,
         )
-        .at(73)?,
+        .at(79)?,
     )
-    .at(73)?;
+    .at(79)?;
     let by_stage: Vec<StageRoll> = {
         let mut __out = Vec::new();
         for st in stages.clone() {
@@ -148,9 +148,9 @@ pub fn forecast(
         weighted_total = convert::as_float(
             &(Value::float(weighted_total))
                 .add(&Value::float((r.clone()).weighted_value))
-                .at(82)?,
+                .at(88)?,
         )
-        .at(82)?;
+        .at(88)?;
     }
     let won_rows: Vec<Value> = convert::as_list(
         &storage::rows(
@@ -168,11 +168,11 @@ pub fn forecast(
                     ("select", Value::list(vec![Value::str("id")])),
                     ("limit", Value::int(5000i64)),
                 ]))
-                .at(85)?,
+                .at(91)?,
         )
-        .at(85)?,
+        .at(91)?,
     )
-    .at(85)?;
+    .at(91)?;
     let lost_rows: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -189,24 +189,24 @@ pub fn forecast(
                     ("select", Value::list(vec![Value::str("id")])),
                     ("limit", Value::int(5000i64)),
                 ]))
-                .at(91)?,
+                .at(97)?,
         )
-        .at(91)?,
+        .at(97)?,
     )
-    .at(91)?;
+    .at(97)?;
     let won: i64 = won_rows.clone().len() as i64;
     let lost: i64 = lost_rows.clone().len() as i64;
     let mut win_rate: f64 = 0.0f64;
-    if convert::as_int(&(Value::int(won)).add(&Value::int(lost)).at(100)?).at(100)? > 0i64 {
+    if convert::as_int(&(Value::int(won)).add(&Value::int(lost)).at(106)?).at(106)? > 0i64 {
         let won_f: f64 = won as f64;
         let total_f: f64 =
-            convert::as_int(&(Value::int(won)).add(&Value::int(lost)).at(106)?).at(106)? as f64;
+            convert::as_int(&(Value::int(won)).add(&Value::int(lost)).at(112)?).at(112)? as f64;
         win_rate = convert::as_float(
             &(Value::float(won_f))
                 .truediv(&Value::float(total_f))
-                .at(107)?,
+                .at(113)?,
         )
-        .at(107)?;
+        .at(113)?;
     }
     let leads_all: Vec<Value> = convert::as_list(
         &storage::rows(
@@ -216,11 +216,11 @@ pub fn forecast(
                     ("select", Value::list(vec![Value::str("id")])),
                     ("limit", Value::int(10000i64)),
                 ]))
-                .at(110)?,
+                .at(116)?,
         )
-        .at(110)?,
+        .at(116)?,
     )
-    .at(110)?;
+    .at(116)?;
     let leads_qualified: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -237,11 +237,11 @@ pub fn forecast(
                     ("select", Value::list(vec![Value::str("id")])),
                     ("limit", Value::int(10000i64)),
                 ]))
-                .at(115)?,
+                .at(121)?,
         )
-        .at(115)?,
+        .at(121)?,
     )
-    .at(115)?;
+    .at(121)?;
     return Ok(ForecastOutput {
         weighted_total: weighted_total,
         by_stage: by_stage.clone(),
