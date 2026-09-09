@@ -1,8 +1,9 @@
 {
   "services": [
     {
-      "namespace": "crm",
+      "domain": "crm",
       "name": "workspace",
+      "api_version": 1,
       "tables_accessed": [
         "accounts",
         "contacts",
@@ -53,7 +54,8 @@
                 }
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "list_accounts",
@@ -80,7 +82,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "list_contacts",
@@ -110,7 +113,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "get_contact",
@@ -143,7 +147,8 @@
                 }
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "list_leads",
@@ -170,7 +175,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "pipeline_board",
@@ -207,7 +213,8 @@
                 }
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "create_account",
@@ -243,7 +250,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "create_contact",
@@ -285,7 +293,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "create_opportunity",
@@ -324,7 +333,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "move_opportunity",
@@ -352,7 +362,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "log_activity",
@@ -394,7 +405,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "convert_lead",
@@ -427,7 +439,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "get_account",
@@ -469,7 +482,8 @@
                 }
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "get_opportunity",
@@ -508,7 +522,8 @@
                 }
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "list_opportunities",
@@ -538,7 +553,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "my_work",
@@ -574,7 +590,8 @@
                 }
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "forecast",
@@ -609,7 +626,8 @@
                 "type": "object"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "update_account",
@@ -637,7 +655,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "update_contact",
@@ -665,7 +684,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "update_opportunity",
@@ -693,7 +713,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "update_lead",
@@ -721,7 +742,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         },
         {
           "name": "close_opportunity",
@@ -749,7 +771,8 @@
                 "type": "integer"
               }
             }
-          }
+          },
+          "auth": "authenticated"
         }
       ]
     }

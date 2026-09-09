@@ -1,0 +1,17 @@
+{
+  "composition": {
+    "workbench": {
+      "consumes": {
+        "crm": "0465e620a1f9c2838d15065edfb89bb16e572f33a7d0a09cf84d3378089594c6"
+      }
+    }
+  },
+  "contracts": {
+    "crm": "0465e620a1f9c2838d15065edfb89bb16e572f33a7d0a09cf84d3378089594c6"
+  },
+  "emitter_version": "0.1.0",
+  "version": "1",
+  "wasm_modules": {
+    "crm::crm": "d92b1299122a629b01ba7ddff7d7ec61dc199235f820f957821193ac01299e7d"
+  }
+}

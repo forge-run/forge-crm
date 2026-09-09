@@ -4,23 +4,23 @@ This isn't a product with a settings page — it's a repo. You change the CRM by
 
 ## Add a field
 
-Edit the table in `schemas/`, add a column, re-apply:
+Edit the table in `domains/crm/schemas/`, add a column, redeploy:
 
 ```jsonc
-// schemas/opportunity.json → columns
+// domains/crm/schemas/opportunities.table.json → columns
 { "name": "forecast_category", "type": "string", "required": false,
   "enum": ["pipeline", "best_case", "commit", "closed"], "label": "Forecast" }
 ```
 
 ```bash
-forge schema apply schemas/opportunity.json
+forge build && forge ship
 ```
 
-The derived REST/MCP/WebSocket API, the audit trail, and row-level security pick it up automatically. Show it in the UI by referencing it in the relevant `.page.html`.
+The data model is repo-owned: the deploy applies it. The derived REST/MCP/WebSocket API, the audit trail, and row-level security pick the column up automatically. Show it in the UI by referencing it in the relevant `.page.html`.
 
 ## Add an object
 
-Drop a new `schemas/<thing>.json` (copy an existing one as a template). On `forge schema apply` you get a secured CRUD API + MCP tools for it, tenant-isolated by the same `row_security` block. Add a page under `pages/app/` to surface it, and a read op in `service.json` + `src/data_ops.rs` (copy `list_contacts` — it's ~6 lines).
+Drop a new `domains/crm/schemas/<thing>.table.json` (copy an existing one as a template). On the next deploy you get a secured CRUD API + MCP tools for it, tenant-isolated by the same `row_security` block. Add a page under `apps/workbench/pages/app/` to surface it, and a read op in `domains/crm/service.json` + `domains/crm/services/<Thing>.java` (copy `ListContacts.java` — it's a dozen lines).
 
 ## Change who-sees-what
 
@@ -45,7 +45,7 @@ It compiles into every query — there's no app code to keep in sync, and no pat
 
 ## Change a screen
 
-Pages are server-rendered: a `.page.json` (route + auth + data bindings) and a `.page.html` (template). Edit the template; bind any data you need through an `@op:crm::<name>` operation declared in `service.json`.
+Pages are server-rendered: a `.page.json` (route + auth + data bindings) and a `.page.html` (template). Edit the template; bind any data you need through an `@op:crm::<name>` operation declared in `domains/crm/service.json`.
 
 ## Let an agent do it
 
@@ -54,20 +54,24 @@ Because the whole application is declarative config, an AI agent can do all of t
 ## Project layout
 
 ```
-schemas/      data model (one JSON per table)        ← the durable core
-service.json  op contracts (what the pages can read/write)
-src/          thin storage-wrapper ops (boilerplate)
-pages/app/    the authenticated UI
-components/   shared UI pieces (crm_shell = the frame)
-app.json      branding, auth providers, hosts
+workspace.json                 which app answers on which host
+domains/crm/schemas/           data model (one <table>.table.json per table)   ← the durable core
+domains/crm/service.json       op contracts (what the pages can read/write)
+domains/crm/services/          thin storage-wrapper ops, in the Forge dialect
+apps/workbench/pages/app/      the authenticated UI
+apps/workbench/components/     shared UI pieces (crm_shell = the frame)
+apps/workbench/app.json        branding, auth providers, hosts
 ```
+
+The domain is the data and the behaviour; the app is the screens. The app
+is pure configuration and compiles to no code, so a screen change never
+rebuilds an operation.
 
 ## Build & ship
 
 ```bash
-for f in schemas/*.json; do forge schema apply "$f"; done
-forge build
-forge ship --manifest service.json --wasm target/wasm32-wasip1/release/forge_crm.wasm --app-manifest app.json --static-dir static
+forge build   # compiles the workspace: schemas, ops, pages, components
+forge ship    # uploads the module, pushes, waits for the converge
 ```
 
 Never commit secrets — see [`.gitignore`](.gitignore). Credentials live in your Forge session, not in this repo.

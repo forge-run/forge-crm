@@ -59,7 +59,6 @@ pub(crate) use jgen::fault;
 
 #[cfg(target_arch = "wasm32")]
 mod component_export {
-    use super::*;
     use forge_sdk_v2::{Guest, OpError, OpInput, OpOutput};
     use serde_json::Value;
 

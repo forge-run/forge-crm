@@ -54,14 +54,23 @@ Not a dashboard bolted onto a database — work surfaces tied to the sales lifec
 Every action a human takes here is a `@op:crm::*` operation — which is **also** the MCP tool an agent calls. The human workbench and the agent operate the same surface, under the same row-level security.
 
 ```
-schemas/        ← the data model: one JSON file per table (the crown jewel — pure declarative config)
-pages/          ← the UI: server-rendered pages (.page.json route + .page.html template + .page.css)
-components/     ← reusable UI pieces (record table, pipeline column, stat tiles, app shell)
-src/            ← a THIN operations layer: storage-query wrappers that pages bind to (boilerplate, no business secrets)
-content/        ← optional seed data + docs
-app.json        ← branding, auth providers, hosts
-service.json    ← the service manifest: which tables the ops touch + the op contracts
+workspace.json          ← which app answers on which host
+domains/crm/
+  schemas/              ← the data model: one `<table>.table.json` per table (the crown jewel — pure declarative config)
+  services/             ← a THIN operations layer: storage-query wrappers the pages bind to, written in the Forge dialect (`*.java`)
+  service.json          ← the op contracts: which tables the ops touch, what each one takes and returns
+  domain.json           ← the bounded context's name and what it may call
+apps/workbench/
+  pages/                ← the UI: server-rendered pages (.page.json route + .page.html template + .page.css)
+  components/           ← reusable UI pieces (record table, pipeline column, stat tiles, app shell)
+  app.json              ← branding, auth providers, hosts
+content/                ← optional seed data + docs
 ```
+
+The **domain** owns data and behaviour; the **app** owns screens. They are
+separate directories because they deploy separately: the app is pure
+configuration and compiles to no code at all, so changing a screen never
+rebuilds an operation.
 
 ---
 
@@ -70,18 +79,14 @@ service.json    ← the service manifest: which tables the ops touch + the op co
 You need the [`forge` CLI](https://forge.run/docs/reference/cli) and a Forge workspace (`forge login`).
 
 ```bash
-# 1. Apply the data model (creates the tables + RLS + the derived API)
-for f in schemas/*.json; do forge schema apply "$f"; done
-
-# 2. Build the thin operations layer to WASM (validates pages + components too)
+# 1. Compile the workspace — the data model, the ops, the pages and the
+#    components, all checked before anything is uploaded
 forge build
 
-# 3. Ship it — static assets upload before the deploy (edge-cache safe)
-forge ship \
-  --manifest service.json \
-  --wasm target/wasm32-wasip1/release/forge_crm.wasm \
-  --app-manifest app.json \
-  --static-dir static
+# 2. Ship it — uploads the built module, pushes, and waits for the converge.
+#    The tables come with it: the data model is repo-owned and applied on
+#    deploy, so there is no separate schema step.
+forge ship
 ```
 
 Open your workspace host and you have a CRM. Point a custom domain at it in `app.json` when you're ready.
@@ -94,8 +99,8 @@ Open your workspace host and you have a CRM. Point a custom domain at it in `app
 
 This isn't a product with a settings page. It's a repo. To change the CRM, change the config:
 
-- **Add a field** → add a column to the table in `schemas/`, re-apply. The API, the audit trail, and RLS pick it up automatically.
-- **Add an object** → drop a new `schemas/<thing>.json`. You now have a secured CRUD API + MCP tools for it.
+- **Add a field** → add a column to the table in `domains/crm/schemas/`, redeploy. The API, the audit trail, and RLS pick it up automatically.
+- **Add an object** → drop a new `domains/crm/schemas/<thing>.table.json`. You now have a secured CRUD API + MCP tools for it.
 - **Change a screen** → edit the `.page.html` template. It's server-rendered HTML with components.
 - **Change who-sees-what** → edit the `row_security` block in the schema. It compiles into every query.
 

@@ -3,11 +3,11 @@
   "workspace": {
     "name": "forge-crm",
     "version": "0.1.0",
-    "description": "Forge CRM — one bounded context (crm) and one declarative app (crm), in the layout the workspace compiler builds."
+    "description": "Forge CRM — one bounded context (crm) and one declarative app (workbench), in the layout the workspace compiler builds. The app is not called `crm` because a domain and an app share one module name space; the domain owns the name, since `@op:crm::<op>` is what every page binds to."
   },
   "hosts": {
     "demos.forge.run": {
-      "app": "crm"
+      "app": "workbench"
     }
   }
 }
