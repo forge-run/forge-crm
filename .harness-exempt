@@ -1,0 +1,7 @@
+{
+  "schema": "forge-harness-exempt/v1",
+  "status": "unenrolled-by-design",
+  "reason": "Not archived and not dead — the intentional case. A public, finished open-source CRM shipped as pure forge config (801 lines), a flagship dogfood/GTM artifact with no consumers BY DESIGN, dormant since 2026-06-06. It is deliberately static rather than unmaintained, so there is no build for harness gates to govern and nothing here is an oversight. If it is ever reopened as live work, this marker is what to remove first.",
+  "citation": "REPOS.md — Tier 3 table, `forge-crm` row (line 50), and 'Zero live references (5)' (lines 112-118): 'forge-crm is the intentional case: a public, finished dogfood artifact with no consumers by design.'",
+  "date": "2026-08-17"
+}
