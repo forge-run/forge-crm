@@ -1,0 +1,55 @@
+# The dogfood raw-Rust bar, run in the repo the number is ABOUT (HS-15).
+#
+# NOT harness-emitted, and deliberately so. The harness emits one workflow per
+# consumer from its own gate set; this bar is a cross-repo number owned by the
+# host-surface plan, and every mechanism that could carry it inside the emitted
+# workflow costs more than it is worth: a gate in the shared harness reaches
+# every consumer of that harness, and a cargo test here needs this repo's whole
+# workspace to build on the host before the bar can be read at all. So this is
+# a hand-written workflow next to the emitted one. It is not drift -- the drift
+# gate compares the paths `.harness/lock.json` records, and this is not one of
+# them -- and it fails on its own, so a red here names the bar and nothing else.
+#
+# ONE IMPLEMENTATION. The counter and the committed baseline live in
+# forge-lang (`scripts/raw-rust-bar.py`, `scripts/raw-rust-bar.baseline.json`)
+# and are checked out beside this repo rather than copied into it. Two trees
+# holding two copies of a bar can disagree, and then the number is an opinion.
+#
+# `--ref forge-crm=HEAD` is the point of the whole step: the count is read from
+# THIS commit, so a raw-Rust op body reintroduced here turns THIS repo red on
+# the push that did it, instead of failing whoever next commits in forge-lang.
+#
+# NO `pull_request` TRIGGER HERE, and only here. forge-crm is the one PUBLIC
+# repo of the three, and these runners are self-hosted on a box that also runs
+# the fleet's CI. A `pull_request` trigger on a public repo runs a fork's
+# workflow file on that box. `push` and `workflow_dispatch` are enough for a
+# bar whose subject is what lands.
+#
+# The long form is translation-engine/RAW-RUST-BAR.md.
+name: raw-rust-bar
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  bar:
+    runs-on: [self-hosted]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: forge-crm
+          fetch-depth: 1
+      - name: Checkout forge-lang (the bar's one implementation)
+        uses: actions/checkout@v4
+        with:
+          repository: forge-run/forge-lang
+          path: forge-lang
+          ref: main
+          clean: true
+          token: ${{ secrets.FORGE_CROSS_REPO_TOKEN }}
+      - name: The raw-Rust bar for forge-crm
+        run: |
+          python3 forge-lang/scripts/raw-rust-bar.py \
+            --root "$GITHUB_WORKSPACE" \
+            --ref forge-crm=HEAD \
+            --only forge-crm \
+            --check
