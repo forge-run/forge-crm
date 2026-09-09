@@ -753,12 +753,5 @@
         }
       ]
     }
-  ],
-  "wasm_modules": [
-    {
-      "service_namespace": "crm",
-      "service_name": "workspace",
-      "wasm_path": "target/wasm32-wasip1/release/forge_crm.wasm"
-    }
   ]
 }

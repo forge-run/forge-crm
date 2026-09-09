@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "workspace": {
+    "name": "forge-crm",
+    "version": "0.1.0",
+    "description": "Forge CRM — one bounded context (crm) and one declarative app (crm), in the layout the workspace compiler builds."
+  },
+  "hosts": {
+    "demos.forge.run": {
+      "app": "crm"
+    }
+  }
+}

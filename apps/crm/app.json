@@ -6,6 +6,9 @@
     "description": "Forge CRM — an open-source, agent-customizable CRM you own. Accounts, contacts, leads, a deal pipeline, and activity tracking, shipped as pure Forge configuration: declarative table schemas (with row-level security + a derived REST/MCP/WebSocket API), server-rendered pages, and a thin storage-wrapper operations layer. Fork it, run it on Forge, customize anything. Never locked in."
   },
   "shell": {},
+  "consumes": [
+    "crm"
+  ],
   "branding_overrides": {
     "colors": {
       "primary": "#e8894a",
@@ -27,7 +30,11 @@
       "font_size_base": "14px",
       "line_height_base": "1.5"
     },
-    "radius": { "sm": "4px", "md": "6px", "lg": "8px" },
+    "radius": {
+      "sm": "4px",
+      "md": "6px",
+      "lg": "8px"
+    },
     "extra": {
       "background": "#0c0d10",
       "surface-3": "#232732",
@@ -48,14 +55,37 @@
   },
   "tenant_claims": {},
   "auth": {
-    "providers": ["password", "passkey", "oauth.google", "oauth.github"],
-    "passkey": { "attestation": "none", "allow_synced": true, "aal_min": "AAL1" },
-    "recovery": { "modes": ["email", "codes"], "code_count": 10 }
+    "providers": [
+      "password",
+      "passkey",
+      "oauth.google",
+      "oauth.github"
+    ],
+    "passkey": {
+      "attestation": "none",
+      "allow_synced": true,
+      "aal_min": "AAL1"
+    },
+    "recovery": {
+      "modes": [
+        "email",
+        "codes"
+      ],
+      "code_count": 10
+    }
   },
   "domains": {
     "hosts": {
-      "demos.forge.run": { "allowed_surfaces": ["app", "auth"] }
+      "demos.forge.run": {
+        "allowed_surfaces": [
+          "app",
+          "auth"
+        ]
+      }
     },
-    "canonical": { "app": "demos.forge.run", "auth": "demos.forge.run" }
+    "canonical": {
+      "app": "demos.forge.run",
+      "auth": "demos.forge.run"
+    }
   }
 }

@@ -1,19 +1,21 @@
-//! Forge CRM — the thin operations layer.
+//! The CRM bounded context — the ops the app's pages bind to.
 //!
-//! The application is declarative: tables in `schemas/`, UI in `pages/` +
-//! `components/`. This crate exists only because page-data bindings resolve
-//! through `@op:crm::<name>` operations — so each page-read and each mutation
-//! is a small handler that wraps `storage::query` / `storage::mutate`.
-//! There is no business logic worth hiding: row-level security (declared in
-//! the schemas) does the enforcement; these handlers just shape payloads.
+//! The application is declarative: tables in `schemas/`, UI in
+//! `apps/crm/pages` + `apps/crm/components`. This crate exists only because
+//! page-data bindings resolve through `@op:crm::<name>` operations — so each
+//! page-read and each mutation is a small handler that wraps
+//! `storage::query` / `storage::mutate`. There is no business logic worth
+//! hiding: row-level security (declared in the schemas) does the enforcement;
+//! these handlers just shape payloads.
 //!
-//! **The handlers are written in the forge-lang dialect** (`ops/*.java`), not
-//! in Rust. `src/jgen` is their emitted Rust, committed so a plain
+//! **The handlers are written in the forge-lang dialect** (`services/*.java`),
+//! not in Rust. `services/jgen` is their emitted Rust, committed so a plain
 //! `cargo build` needs no transpiler; regenerate it in the SAME commit as any
-//! `ops/` change with
+//! `services/` change with
 //!
 //! ```text
-//! forge-lang build ops/*.java --module-out src/jgen --source-root .
+//! forge-lang build domains/crm/services/*.java \
+//!   --module-out domains/crm/services/jgen --source-root .
 //! ```
 //!
 //! ALL twenty-two ops are dialect sources as of HS-9, and `src/data_ops.rs`
@@ -31,15 +33,20 @@
 //! file, immediately before dispatching `dashboard_summary` — exactly where
 //! the Rust op ran it — and hands the diagnostic to the dialect op as an
 //! input field, which the op echoes. Its value and its position on the wire
-//! are unchanged.
+//! are unchanged. It is also why this domain keeps a hand-written
+//! `services/lib.rs` (the MIXED shape) rather than a wholly emitted crate.
 //!
-//! The Guest contract mirrors forge-portal-web: the runtime re-invokes this
-//! wasm with `ctx.op_name` set to the bound op; we branch on it and return a
-//! raw JSON value (the data-binding resolver lifts it into
-//! `props.data.<binding>`), falling through to the page renderer for routes.
-
-#[cfg(target_arch = "wasm32")]
-use forge_sdk_v2::{Guest, OpContext, OpError, OpInput, OpOutput, Response};
+//! **This module is HEADLESS**, like the portal's domain crates: the runtime
+//! re-invokes this wasm with `ctx.op_name` set to the bound op, the op
+//! returns raw JSON, and the substrate lifts it into `props.data.<binding>`.
+//! Until HS-10 this crate ALSO rendered the app's routes — it carried
+//! `forge_web::dispatch_with` and an `include!` of the declarative-page
+//! registration a root `build.rs` emitted into `OUT_DIR`. In the domain/app
+//! layout the pages are walked by forge-web's workspace compiler and shipped
+//! as manifest rows the substrate renders, so the page half of this file, its
+//! `forge-web` / `forge-schema` dependencies and the `build.rs` that fed it
+//! are all gone. An op name this module does not own is now a refusal, not a
+//! fallthrough to a page.
 
 mod jgen;
 
@@ -50,20 +57,17 @@ mod seed;
 // an all-dialect crate; this re-export is what resolves it here.
 pub(crate) use jgen::fault;
 
-// Declarative pages (pages/**/*.page.{json,html,css}) register at link time
-// via the codegen build.rs emits into OUT_DIR.
-include!(concat!(env!("OUT_DIR"), "/declarative_pages.rs"));
-
 #[cfg(target_arch = "wasm32")]
 mod component_export {
     use super::*;
+    use forge_sdk_v2::{Guest, OpError, OpInput, OpOutput};
     use serde_json::Value;
 
     pub struct Crm;
 
     impl Guest for Crm {
         fn handle(input: OpInput) -> Result<OpOutput, OpError> {
-            let parsed: Value = serde_json::from_str(&input.json)
+            let _parsed: Value = serde_json::from_str(&input.json)
                 .map_err(|e| OpError::BadRequest(format!("input is not valid JSON: {e}")))?;
             let ctx = forge_sdk_v2::op_context()
                 .map_err(|e| OpError::Internal(format!("op_context unavailable: {e}")))?;
@@ -83,8 +87,8 @@ mod component_export {
                 input.json.clone()
             };
 
-            // Every op is a dialect op now; the fallthrough is the SSR page
-            // dispatcher for routes.
+            // Every op is a dialect op. A name this domain does not own is
+            // a refusal: routes are the substrate's job, not this wasm's.
             let json = match crate::jgen::dispatch(
                 ctx.op_name.as_str(),
                 &input_json,
@@ -92,23 +96,14 @@ mod component_export {
             ) {
                 Some(r) => r?,
                 None => {
-                    let response = dispatch(&ctx, &parsed)
-                        .map_err(|e| OpError::Internal(format!("dispatch: {e}")))?;
-                    serde_json::to_string(&response)
-                        .map_err(|e| OpError::Internal(format!("encode response: {e}")))?
+                    return Err(OpError::BadRequest(format!(
+                        "unknown op `{}` — the crm domain serves only the ops in its service.json",
+                        ctx.op_name
+                    )));
                 }
             };
             Ok(OpOutput { json })
         }
-    }
-
-    // Unauthenticated / forbidden requests land on the sign-in page (NOT /app,
-    // which would loop for an anon caller).
-    const DISPATCH_CONFIG: forge_web::DispatchConfig =
-        forge_web::DispatchConfig::new().with_forbidden_redirect("/login");
-
-    fn dispatch(ctx: &OpContext, input: &Value) -> Result<Response, String> {
-        forge_web::dispatch_with(ctx, input, DISPATCH_CONFIG)
     }
 
     forge_sdk_v2::export!(Crm with_types_in forge_sdk_v2);

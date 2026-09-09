@@ -1,0 +1,7 @@
+{
+  "schema_version": "0.1",
+  "name": "crm",
+  "description": "The CRM bounded context: accounts, contacts, leads, a deal pipeline and activity tracking. Its ops are the dialect sources in services/*.java; the tables they read are the schemas beside them.",
+  "consumes": [],
+  "secrets": []
+}

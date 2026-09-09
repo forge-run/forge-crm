@@ -1,39 +1,14 @@
-[package]
-name = "forge-crm"
-version = "0.1.0"
-edition = "2021"
-publish = false
-description = "Forge CRM — the thin operations layer (storage-query wrappers the pages bind to). The application itself is the declarative config in schemas/ + pages/ + components/."
-
-[lib]
-# `cdylib` is the deploy artifact (wasm32-wasip1 → Component Model).
-# `rlib` lets `cargo test` link host-side without the Component symbols.
-crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-# The Forge SDK — the Guest export macro, OpContext, and storage::query/mutate.
+# Virtual workspace — forge-crm is a domain/app WORKSPACE, not one crate.
 #
-# These are PATH deps to the sibling Forge crates (monorepo layout: forge-crm
-# lives beside forge-sdk-v2 / forge-web / forge-schema under the same parent).
-# For a standalone fork OUTSIDE the monorepo, point them at the published
-# crates (crates.io) or a git dependency, e.g.:
-#   forge-sdk-v2 = { git = "https://github.com/forge-run/forge-sdk", tag = "v2" }
-forge-sdk-v2 = { path = "../forge-sdk-v2" }
-# The dialect runtime the emitted `src/jgen` module links. The 18 ops in
-# `ops/*.java` are the app's operations layer; `jgen` is their emitted Rust,
-# regenerated with `forge-lang build ops/*.java --module-out src/jgen
-# --source-root .` and COMMITTED, so a plain `cargo build` needs no
-# transpiler on the machine.
-forge-lang-rt = { path = "../forge-lang/crates/forge-lang-rt", features = ["sdk"] }
-forge-web    = { path = "../forge-web/core" }
-forge-schema = { path = "../forge-schema" }
-
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-
-[build-dependencies]
-# Phase-B/C walkers: validate manifests, walk pages/ + components/, emit the
-# declarative-page registration codegen + the scoped/minified CSS bundle.
-forge-web-build = { path = "../forge-web/build" }
-forge-schema = { path = "../forge-schema" }
-serde_json = { version = "1", features = ["preserve_order"] }
+# The app (`apps/crm`) is purely declarative and compiles to zero wasm: its
+# pages and components are walked by forge-web's workspace compiler at build
+# time and shipped as manifest rows, which is what retired the root `build.rs`
+# that used to walk them into `OUT_DIR` codegen (HS-10).
+#
+# The only Rust here is the domain module, and its op bodies are not Rust
+# either: `domains/crm/services/*.java` are dialect sources and
+# `domains/crm/services/jgen` is their emitted Rust, committed so a plain
+# `cargo build` needs no transpiler on the machine.
+[workspace]
+members = ["domains/crm"]
+resolver = "2"
