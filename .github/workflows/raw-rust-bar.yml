@@ -32,7 +32,20 @@ on:
   workflow_dispatch:
 jobs:
   bar:
-    runs-on: [self-hosted]
+    # A GITHUB-HOSTED runner, and only here. The org's self-hosted `Default`
+    # runner group has `allows_public_repositories: false`, and forge-crm is
+    # the one public repo of the three -- so a `runs-on: [self-hosted]` job
+    # here does not fail, it QUEUES FOREVER, which is worse: the bar reads as
+    # wired and answers nothing. Both of this workflow's first two runs
+    # (34310246341 on main, 34310305962 on the proof branch) sat queued and
+    # were cancelled.
+    #
+    # Flipping that group's flag was deliberately NOT done. It would let any
+    # public repo's workflow run on the box that runs the fleet's CI, which is
+    # an org-wide posture change for one bar, and it is not this step's to
+    # take. A hosted runner needs nothing this job does not already have:
+    # python3, git, and a token'd checkout of forge-lang.
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
