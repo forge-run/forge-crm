@@ -23,6 +23,7 @@ use crate::fault::OpFault;
 use forge_lang_rt::*;
 
 pub fn byId(__storage: &dyn storage::Storage, table: String, id: String) -> Result<Value, OpFault> {
+    let __frame = budget::enter_frame()?;
     let found: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -58,6 +59,7 @@ pub fn related(
     id: String,
     limit: i64,
 ) -> Result<Vec<Value>, OpFault> {
+    let __frame = budget::enter_frame()?;
     return Ok(convert::as_list(
         &storage::rows(
             &__storage
@@ -92,6 +94,7 @@ pub fn timeline(
     relatedType: String,
     relatedId: String,
 ) -> Result<Vec<Value>, OpFault> {
+    let __frame = budget::enter_frame()?;
     return Ok(convert::as_list(
         &storage::rows(
             &__storage
@@ -138,6 +141,7 @@ pub fn getAccount(
     _ctx: &dyn context::Context,
     input: Value,
 ) -> Result<GetAccountOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let id: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("id"), &Value::str("")).at(63)?,
     )

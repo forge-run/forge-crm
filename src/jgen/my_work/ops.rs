@@ -29,6 +29,7 @@ pub fn myWork(
     ctx: &dyn context::Context,
     _input: Value,
 ) -> Result<MyWorkOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let mut owner: Value = Value::none();
     let uid: String = ctx.user_id().at(25)?;
     if !(uid.clone() == "") {

@@ -23,6 +23,7 @@ use crate::fault::OpFault;
 use forge_lang_rt::*;
 
 pub fn roll(st: Value, open: Vec<Value>) -> Result<StageRoll, OpFault> {
+    let __frame = budget::enter_frame()?;
     let sid: String =
         convert::as_str(&library::get_str(&st.clone(), &Value::str("id"), &Value::str("")).at(48)?)
             .at(48)?;
@@ -45,6 +46,7 @@ pub fn roll(st: Value, open: Vec<Value>) -> Result<StageRoll, OpFault> {
     let mut raw: f64 = 0.0f64;
     let mut n: i64 = 0i64;
     for o in open.clone() {
+        budget::tick()?;
         if convert::as_str(
             &library::get_str(&o.clone(), &Value::str("stage_id"), &Value::str("")).at(59)?,
         )
@@ -89,6 +91,7 @@ pub fn forecast(
     _ctx: &dyn context::Context,
     _input: Value,
 ) -> Result<ForecastOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let stages: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -139,12 +142,14 @@ pub fn forecast(
     let by_stage: Vec<StageRoll> = {
         let mut __out = Vec::new();
         for st in stages.clone() {
+            budget::tick()?;
             __out.push(roll(st.clone(), open.clone())?);
         }
         __out
     };
     let mut weighted_total: f64 = 0.0f64;
     for r in by_stage.clone() {
+        budget::tick()?;
         weighted_total = convert::as_float(
             &(Value::float(weighted_total))
                 .add(&Value::float((r.clone()).weighted_value))

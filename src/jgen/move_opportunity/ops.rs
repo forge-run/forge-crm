@@ -29,6 +29,7 @@ pub fn moveOpportunity(
     _ctx: &dyn context::Context,
     input: Value,
 ) -> Result<MoveOpportunityOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let id: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("id"), &Value::str("")).at(21)?,
     )

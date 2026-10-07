@@ -23,6 +23,7 @@ use crate::fault::OpFault;
 use forge_lang_rt::*;
 
 pub fn column(stage: Value, opps: Vec<Value>) -> Result<BoardColumn, OpFault> {
+    let __frame = budget::enter_frame()?;
     let sid: String = convert::as_str(
         &library::get_str(&stage.clone(), &Value::str("id"), &Value::str("")).at(36)?,
     )
@@ -30,6 +31,7 @@ pub fn column(stage: Value, opps: Vec<Value>) -> Result<BoardColumn, OpFault> {
     let in_stage: Vec<Value> = {
         let mut __out = Vec::new();
         for o in opps.clone() {
+            budget::tick()?;
             if convert::as_str(
                 &library::get_str(&o.clone(), &Value::str("stage_id"), &Value::str("")).at(38)?,
             )
@@ -43,6 +45,7 @@ pub fn column(stage: Value, opps: Vec<Value>) -> Result<BoardColumn, OpFault> {
     };
     let mut total: f64 = -0.0f64;
     for o in in_stage.clone() {
+        budget::tick()?;
         total = convert::as_float(
             &(Value::float(total))
                 .add(&Value::float(
@@ -75,6 +78,7 @@ pub fn pipelineBoard(
     _ctx: &dyn context::Context,
     _input: Value,
 ) -> Result<PipelineBoardOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let stages: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -135,6 +139,7 @@ pub fn pipelineBoard(
         columns: {
             let mut __out = Vec::new();
             for stage in stages.clone() {
+                budget::tick()?;
                 __out.push(column(stage.clone(), opps.clone())?);
             }
             __out

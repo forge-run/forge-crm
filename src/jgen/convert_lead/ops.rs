@@ -29,6 +29,7 @@ pub fn insert(
     uid: String,
     input: Value,
 ) -> Result<Inserted, OpFault> {
+    let __frame = budget::enter_frame()?;
     let tenant: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("tenant_id"), &Value::str("")).at(24)?,
     )
@@ -76,6 +77,7 @@ pub fn convertLead(
     ctx: &dyn context::Context,
     input: Value,
 ) -> Result<ConvertLeadOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let id: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("id"), &Value::str("")).at(44)?,
     )
@@ -187,26 +189,32 @@ pub fn convertLead(
             &library::get_str(&lead.clone(), &Value::str("company"), &Value::str("")).at(73)?,
         )
         .at(73)?;
-        let mut name: String = convert::as_str(&strings::fstring(&[
-            Value::from_string(company.clone()),
-            Value::str(" opportunity"),
-        ]))
+        let mut name: String = convert::as_str(
+            &strings::fstring(&[
+                Value::from_string(company.clone()),
+                Value::str(" opportunity"),
+            ])
+            .at(74)?,
+        )
         .at(74)?;
         if company.clone() == "" {
-            name = convert::as_str(&strings::fstring(&[
-                Value::from_string(
-                    convert::as_str(
-                        &library::get_str(
-                            &lead.clone(),
-                            &Value::str("first_name"),
-                            &Value::str(""),
+            name = convert::as_str(
+                &strings::fstring(&[
+                    Value::from_string(
+                        convert::as_str(
+                            &library::get_str(
+                                &lead.clone(),
+                                &Value::str("first_name"),
+                                &Value::str(""),
+                            )
+                            .at(76)?,
                         )
                         .at(76)?,
-                    )
-                    .at(76)?,
-                ),
-                Value::str(" opportunity"),
-            ]))
+                    ),
+                    Value::str(" opportunity"),
+                ])
+                .at(76)?,
+            )
             .at(76)?;
         }
         let opportunity: Inserted = insert(

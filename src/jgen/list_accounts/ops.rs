@@ -29,6 +29,7 @@ pub fn listAccounts(
     _ctx: &dyn context::Context,
     input: Value,
 ) -> Result<ListAccountsOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let spec: Value = Value::dict_from(vec![
         ("from", Value::str("accounts")),
         (
@@ -54,11 +55,14 @@ pub fn listAccounts(
                     (
                         "value",
                         Value::from_string(
-                            convert::as_str(&strings::fstring(&[
-                                Value::str("%"),
-                                Value::from_string(term.clone()),
-                                Value::str("%"),
-                            ]))
+                            convert::as_str(
+                                &strings::fstring(&[
+                                    Value::str("%"),
+                                    Value::from_string(term.clone()),
+                                    Value::str("%"),
+                                ])
+                                .at(29)?,
+                            )
                             .at(29)?,
                         ),
                     ),

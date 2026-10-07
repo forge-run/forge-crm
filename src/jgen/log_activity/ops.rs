@@ -29,6 +29,7 @@ pub fn insert(
     uid: String,
     input: Value,
 ) -> Result<LogActivityOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let tenant: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("tenant_id"), &Value::str("")).at(20)?,
     )
@@ -76,6 +77,7 @@ pub fn logActivity(
     ctx: &dyn context::Context,
     input: Value,
 ) -> Result<LogActivityOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let subject: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("subject"), &Value::str("")).at(40)?,
     )

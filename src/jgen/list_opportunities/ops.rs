@@ -29,6 +29,7 @@ pub fn listOpportunities(
     _ctx: &dyn context::Context,
     input: Value,
 ) -> Result<ListOpportunitiesOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let spec: Value = Value::dict_from(vec![
         ("from", Value::str("opportunities")),
         (

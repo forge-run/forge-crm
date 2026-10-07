@@ -34,6 +34,8 @@ pub enum OpFault {
     Dialect(DialectError),
     /// The handler raised.
     Op(OpError),
+    /// The handler raised a declared domain error (ST-4).
+    Declared(forge_lang_rt::guard::Declared),
 }
 
 impl From<DialectError> for OpFault {
@@ -46,6 +48,16 @@ impl From<OpFault> for OpError {
     fn from(fault: OpFault) -> OpError {
         match fault {
             OpFault::Op(e) => e,
+            // ST-4-DESIGN decision 4, spelled as the engine's arm: the host learns the declared
+            // code, status and details through the import, before the bad-request it rides beside.
+            OpFault::Declared(d) if forge_sdk_v2::declared_error::available() => {
+                forge_sdk_v2::declared_error::declare(d.code, d.status, d.details);
+                OpError::BadRequest(d.message.to_string())
+            }
+            OpFault::Declared(d) => OpError::Internal(format!(
+                "declared error {} needs CAP_DECLARED_ERROR",
+                d.code
+            )),
             OpFault::Dialect(e) => {
                 // P4.6 / ADR-0035 — hand the runtime the DIALECT position of
                 // the expression that raised, when the emitter attached one.
@@ -65,8 +77,30 @@ impl From<OpFault> for OpError {
                     DialectError::IndexError { msg, .. } => {
                         OpError::Internal(format!("IndexError: {msg}"))
                     }
+                    // EB-1: a platform budget ran out. `kind()` is
+                    // `BudgetError` and the message names WHICH budget, so the
+                    // op ends in a refusal the operator can read rather than
+                    // in the trap the engine ceiling underneath would have
+                    // produced a moment later.
+                    DialectError::BudgetExceeded { msg, .. } => {
+                        OpError::Internal(format!("BudgetError: {msg}"))
+                    }
+                    // LX-1: a native text constructor's refusal, tagged so a
+                    // guarded region can catch it and reported, uncaught,
+                    // exactly as the `TypeError` it was before the tag.
+                    DialectError::Parse { msg, .. } => {
+                        OpError::Internal(format!("TypeError: {msg}"))
+                    }
                 }
             }
+        }
+    }
+}
+
+impl forge_lang_rt::FaultSite for OpFault {
+    fn fill_at(&mut self, line: u32) {
+        if let OpFault::Dialect(e) = self {
+            forge_lang_rt::FaultSite::fill_at(e, line);
         }
     }
 }

@@ -33,8 +33,12 @@ pub struct BoardColumn {
     pub stage: Value,
     pub opportunities: Vec<Value>,
     #[serde(serialize_with = "forge_lang_rt::json::finite_f64")]
+    #[serde(deserialize_with = "__bind_boardcolumn_2")]
     pub total_value: f64,
     pub count: i64,
+}
+fn __bind_boardcolumn_2<'de, D: serde::Deserializer<'de>>(d: D) -> Result<f64, D::Error> {
+    forge_lang_rt::json::de_bound(d, "total_value")
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

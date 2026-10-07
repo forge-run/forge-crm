@@ -29,6 +29,7 @@ pub fn dashboardSummary(
     _ctx: &dyn context::Context,
     input: Value,
 ) -> Result<DashboardSummaryOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let open: Vec<Value> = convert::as_list(
         &storage::rows(
             &__storage
@@ -55,6 +56,7 @@ pub fn dashboardSummary(
     .at(51)?;
     let mut pipeline_value: f64 = -0.0f64;
     for o in open.clone() {
+        budget::tick()?;
         pipeline_value = convert::as_float(
             &(Value::float(pipeline_value))
                 .add(&Value::float(

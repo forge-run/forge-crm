@@ -32,10 +32,16 @@ use serde::{Deserialize, Serialize};
 pub struct DashboardSummaryOutput {
     pub open_opportunities: i64,
     #[serde(serialize_with = "forge_lang_rt::json::finite_f64")]
+    #[serde(deserialize_with = "__bind_dashboardsummaryoutput_1")]
     pub open_pipeline_value: f64,
     pub won_this_period: i64,
     pub contacts_total: i64,
     pub leads_open: i64,
     pub recent_activities: Vec<Value>,
     pub seed_diag: String,
+}
+fn __bind_dashboardsummaryoutput_1<'de, D: serde::Deserializer<'de>>(
+    d: D,
+) -> Result<f64, D::Error> {
+    forge_lang_rt::json::de_bound(d, "open_pipeline_value")
 }

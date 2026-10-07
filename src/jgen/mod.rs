@@ -58,133 +58,133 @@ pub fn dispatch(
     let store = forge_lang_rt::storage::SdkStorage;
     match op_name {
         "close_opportunity" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::close_opportunity::ops::closeOpportunity(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "convert_lead" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::convert_lead::ops::convertLead(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "create_account" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::create_account::ops::createAccount(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "create_contact" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::create_contact::ops::createContact(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "create_opportunity" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::create_opportunity::ops::createOpportunity(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "dashboard_summary" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::dashboard_summary::ops::dashboardSummary(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "forecast" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::forecast::ops::forecast(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "get_account" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::get_account::ops::getAccount(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "get_contact" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::get_contact::ops::getContact(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "get_opportunity" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::get_opportunity::ops::getOpportunity(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "list_accounts" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::list_accounts::ops::listAccounts(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "list_contacts" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::list_contacts::ops::listContacts(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "list_leads" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::list_leads::ops::listLeads(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "list_opportunities" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::list_opportunities::ops::listOpportunities(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "log_activity" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::log_activity::ops::logActivity(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "move_opportunity" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::move_opportunity::ops::moveOpportunity(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "my_work" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::my_work::ops::myWork(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "pipeline_board" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::pipeline_board::ops::pipelineBoard(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "update_account" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::update_account::ops::updateAccount(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "update_contact" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::update_contact::ops::updateContact(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "update_lead" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::update_lead::ops::updateLead(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))
         })()),
         "update_opportunity" => Some((|| -> Result<String, OpError> {
-            let input = serde_json::from_str::<forge_lang_rt::Value>(input_json)
+            let input = forge_lang_rt::json::parse_dialect(input_json)
                 .map_err(|e| OpError::BadRequest(format!("input is not a dialect value: {e}")))?;
             let v = self::update_opportunity::ops::updateOpportunity(&store, &host, input)?;
             serde_json::to_string(&v).map_err(|e| OpError::Internal(format!("encode: {e}")))

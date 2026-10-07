@@ -29,6 +29,7 @@ pub fn listLeads(
     _ctx: &dyn context::Context,
     input: Value,
 ) -> Result<ListLeadsOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let spec: Value = Value::dict_from(vec![
         ("from", Value::str("leads")),
         (

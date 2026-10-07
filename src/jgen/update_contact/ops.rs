@@ -29,6 +29,7 @@ pub fn updateContact(
     _ctx: &dyn context::Context,
     input: Value,
 ) -> Result<UpdateContactOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let id: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("id"), &Value::str("")).at(27)?,
     )
@@ -41,6 +42,7 @@ pub fn updateContact(
     let given: Value = library::get_dict(&input.clone(), &Value::str("patch")).at(31)?;
     let patch: Value = Value::dict_from(vec![]);
     for k in convert::as_str_list(&(given.clone()).dict_keys().at(33)?).at(33)? {
+        budget::tick()?;
         if !(Value::list(
             vec![
                 "id".to_string(),

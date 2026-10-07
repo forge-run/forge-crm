@@ -32,9 +32,17 @@ pub struct StageRoll {
     pub stage: String,
     pub count: i64,
     #[serde(serialize_with = "forge_lang_rt::json::finite_f64")]
+    #[serde(deserialize_with = "__bind_stageroll_2")]
     pub raw_value: f64,
     #[serde(serialize_with = "forge_lang_rt::json::finite_f64")]
+    #[serde(deserialize_with = "__bind_stageroll_3")]
     pub weighted_value: f64,
+}
+fn __bind_stageroll_2<'de, D: serde::Deserializer<'de>>(d: D) -> Result<f64, D::Error> {
+    forge_lang_rt::json::de_bound(d, "raw_value")
+}
+fn __bind_stageroll_3<'de, D: serde::Deserializer<'de>>(d: D) -> Result<f64, D::Error> {
+    forge_lang_rt::json::de_bound(d, "weighted_value")
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -48,11 +56,19 @@ pub struct Funnel {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ForecastOutput {
     #[serde(serialize_with = "forge_lang_rt::json::finite_f64")]
+    #[serde(deserialize_with = "__bind_forecastoutput_0")]
     pub weighted_total: f64,
     pub by_stage: Vec<StageRoll>,
     pub won: i64,
     pub lost: i64,
     #[serde(serialize_with = "forge_lang_rt::json::finite_f64")]
+    #[serde(deserialize_with = "__bind_forecastoutput_4")]
     pub win_rate: f64,
     pub funnel: Funnel,
+}
+fn __bind_forecastoutput_0<'de, D: serde::Deserializer<'de>>(d: D) -> Result<f64, D::Error> {
+    forge_lang_rt::json::de_bound(d, "weighted_total")
+}
+fn __bind_forecastoutput_4<'de, D: serde::Deserializer<'de>>(d: D) -> Result<f64, D::Error> {
+    forge_lang_rt::json::de_bound(d, "win_rate")
 }

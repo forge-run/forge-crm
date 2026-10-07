@@ -29,6 +29,7 @@ pub fn insert(
     uid: String,
     input: Value,
 ) -> Result<CreateOpportunityOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let tenant: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("tenant_id"), &Value::str("")).at(31)?,
     )
@@ -76,6 +77,7 @@ pub fn createOpportunity(
     ctx: &dyn context::Context,
     input: Value,
 ) -> Result<CreateOpportunityOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let name: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("name"), &Value::str("")).at(51)?,
     )

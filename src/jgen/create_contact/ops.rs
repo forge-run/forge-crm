@@ -29,6 +29,7 @@ pub fn insert(
     uid: String,
     input: Value,
 ) -> Result<CreateContactOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let tenant: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("tenant_id"), &Value::str("")).at(21)?,
     )
@@ -76,6 +77,7 @@ pub fn createContact(
     ctx: &dyn context::Context,
     input: Value,
 ) -> Result<CreateContactOutput, OpFault> {
+    let __frame = budget::enter_frame()?;
     let first: String = convert::as_str(
         &library::get_str(&input.clone(), &Value::str("first_name"), &Value::str("")).at(41)?,
     )
