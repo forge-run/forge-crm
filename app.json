@@ -37,6 +37,8 @@
       "ember-glow": "rgba(232, 137, 74, 0.32)",
       "signal-up": "#6cc9a3",
       "signal-down": "#e8736a",
+      "signal-call": "#7aa7ff",
+      "ember-ink": "#fff",
       "ease-out": "cubic-bezier(0.22, 1, 0.36, 1)",
       "duration-fast": "120ms",
       "duration-normal": "220ms"

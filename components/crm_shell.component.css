@@ -35,7 +35,7 @@
 .crm-btn { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600;
   padding: 8px 14px; border-radius: 8px; border: 1px solid transparent; text-decoration: none; cursor: pointer;
   transition: background var(--brand-duration-fast, 120ms) var(--brand-ease-out), border-color var(--brand-duration-fast, 120ms) var(--brand-ease-out); }
-.crm-btn--ember { background: var(--brand-primary); color: #fff; }
+.crm-btn--ember { background: var(--brand-primary); color: var(--brand-ember-ink); }
 .crm-btn--ember:hover { background: var(--brand-foreground); }
 .crm-btn--ghost { color: var(--brand-foreground-muted); border-color: var(--brand-border); }
 .crm-btn--ghost:hover { color: var(--brand-foreground); border-color: var(--brand-foreground-faint); }
@@ -67,7 +67,7 @@
   padding: 7px 13px; border-radius: 999px; border: 1px solid var(--brand-border); background: transparent;
   transition: color var(--brand-duration-fast,120ms), border-color var(--brand-duration-fast,120ms), background var(--brand-duration-fast,120ms); }
 .op-chip:hover { color: var(--brand-foreground); border-color: var(--brand-foreground-faint); }
-.op-chip.is-active { color: var(--brand-primary); border-color: var(--brand-ember-mid, rgba(232,137,74,0.34)); background: var(--brand-ember-soft); }
+.op-chip.is-active { color: var(--brand-primary); border-color: var(--brand-ember-mid, color-mix(in srgb, var(--brand-primary) 34%, transparent)); background: var(--brand-ember-soft); }
 .op-count { font-size: 12.5px; color: var(--brand-foreground-faint); margin-left: auto; }
 
 /* worklist table */
@@ -85,11 +85,11 @@
 /* status / kind pills */
 .pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600;
   letter-spacing: 0.02em; background: var(--brand-surface-2, var(--brand-surface)); color: var(--brand-foreground-muted); }
-.pill--open, .pill--new, .pill--active, .pill--qualified, .pill--customer { background: rgba(108,201,163,0.16); color: var(--brand-success,#6cc9a3); }
+.pill--open, .pill--new, .pill--active, .pill--qualified, .pill--customer { background: color-mix(in srgb, var(--brand-success) 16%, transparent); color: var(--brand-success); }
 .pill--working, .pill--prospect, .pill--warm { background: var(--brand-ember-soft); color: var(--brand-primary); }
-.pill--won { background: rgba(108,201,163,0.18); color: var(--brand-success,#6cc9a3); }
-.pill--lost, .pill--unqualified, .pill--inactive, .pill--cold { background: rgba(232,115,106,0.16); color: var(--brand-danger,#e8736a); }
-.pill--hot { background: rgba(232,137,74,0.18); color: var(--brand-primary); }
+.pill--won { background: color-mix(in srgb, var(--brand-success) 18%, transparent); color: var(--brand-success); }
+.pill--lost, .pill--unqualified, .pill--inactive, .pill--cold { background: color-mix(in srgb, var(--brand-danger) 16%, transparent); color: var(--brand-danger); }
+.pill--hot { background: color-mix(in srgb, var(--brand-primary) 18%, transparent); color: var(--brand-primary); }
 
 /* record workbench — header + two-column body (main + side rail) */
 .wb { max-width: 1080px; display: flex; flex-direction: column; gap: 22px; }
@@ -125,9 +125,9 @@
 .timeline__row:last-child { border-bottom: none; }
 .timeline__kind { flex: none; width: 62px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
   padding: 4px 0; border-radius: 6px; background: var(--brand-ember-soft); color: var(--brand-primary); }
-.timeline__kind--call { background: rgba(122,167,255,0.14); color: #7aa7ff; }
-.timeline__kind--meeting { background: rgba(167,139,250,0.16); color: #a78bfa; }
-.timeline__kind--task { background: rgba(108,201,163,0.16); color: var(--brand-success,#6cc9a3); }
+.timeline__kind--call { background: color-mix(in srgb, var(--brand-signal-call) 14%, transparent); color: var(--brand-signal-call); }
+.timeline__kind--meeting { background: color-mix(in srgb, var(--brand-secondary) 16%, transparent); color: var(--brand-secondary); }
+.timeline__kind--task { background: color-mix(in srgb, var(--brand-success) 16%, transparent); color: var(--brand-success); }
 .timeline__c { flex: 1; min-width: 0; }
 .timeline__subject { font-size: 14px; color: var(--brand-foreground); }
 .timeline__when { font-size: 11.5px; color: var(--brand-foreground-faint); }
