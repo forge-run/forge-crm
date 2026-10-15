@@ -19,7 +19,11 @@
       "border_strong": "#353a47",
       "danger": "#e8736a",
       "success": "#6cc9a3",
-      "warning": "#e8894a"
+      "warning": "#e8894a",
+      "on_primary": "#161920",
+      "on_success": "#161920",
+      "on_warning": "#161920",
+      "on_danger": "#161920"
     },
     "typography": {
       "font_family": "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",

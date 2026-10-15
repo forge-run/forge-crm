@@ -14,7 +14,7 @@
 .opp { display: flex; flex-direction: column; gap: 10px; padding: 13px 14px; border-radius: 11px;
   border: 1px solid var(--brand-border); background: var(--brand-background); text-decoration: none; color: inherit;
   transition: border-color var(--brand-duration-fast, 120ms) var(--brand-ease-out), transform var(--brand-duration-fast, 120ms) var(--brand-ease-out); }
-.opp:hover { border-color: var(--brand-ember-mid, rgba(232,137,74,0.34)); transform: translateY(-2px); }
+.opp:hover { border-color: var(--brand-ember-glow); transform: translateY(-2px); }
 .opp__name { font-size: 14px; font-weight: 500; line-height: 1.3; color: var(--brand-foreground); }
 .opp__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .opp__amt { font-size: 14px; font-weight: 600; color: var(--brand-primary); font-feature-settings: 'tnum' 1; }
