@@ -85,10 +85,10 @@
 /* status / kind pills */
 .pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600;
   letter-spacing: 0.02em; background: var(--brand-surface); color: var(--brand-foreground-muted); }
-.pill--open, .pill--new, .pill--active, .pill--qualified, .pill--customer { background: color-mix(in srgb, var(--brand-success) 16%, transparent); color: var(--brand-success); }
+.pill--open, .pill--new, .pill--active, .pill--qualified, .pill--customer { background: color-mix(in srgb, var(--brand-success) 16%, transparent); color: var(--brand-success-text); }
 .pill--working, .pill--prospect, .pill--warm { background: var(--brand-ember-soft); color: var(--brand-primary); }
-.pill--won { background: color-mix(in srgb, var(--brand-success) 18%, transparent); color: var(--brand-success); }
-.pill--lost, .pill--unqualified, .pill--inactive, .pill--cold { background: color-mix(in srgb, var(--brand-danger) 16%, transparent); color: var(--brand-danger); }
+.pill--won { background: color-mix(in srgb, var(--brand-success) 18%, transparent); color: var(--brand-success-text); }
+.pill--lost, .pill--unqualified, .pill--inactive, .pill--cold { background: color-mix(in srgb, var(--brand-danger) 16%, transparent); color: var(--brand-danger-text); }
 .pill--hot { background: color-mix(in srgb, var(--brand-primary) 18%, transparent); color: var(--brand-primary); }
 
 /* record workbench — header + two-column body (main + side rail) */
@@ -127,7 +127,7 @@
   padding: 4px 0; border-radius: 6px; background: var(--brand-ember-soft); color: var(--brand-primary); }
 .timeline__kind--call { background: color-mix(in srgb, var(--brand-signal-call) 14%, transparent); color: var(--brand-signal-call); }
 .timeline__kind--meeting { background: color-mix(in srgb, var(--brand-secondary) 16%, transparent); color: var(--brand-secondary); }
-.timeline__kind--task { background: color-mix(in srgb, var(--brand-success) 16%, transparent); color: var(--brand-success); }
+.timeline__kind--task { background: color-mix(in srgb, var(--brand-success) 16%, transparent); color: var(--brand-success-text); }
 .timeline__c { flex: 1; min-width: 0; }
 .timeline__subject { font-size: 14px; color: var(--brand-foreground); }
 .timeline__when { font-size: 11.5px; color: var(--brand-foreground-faint); }
