@@ -11,8 +11,9 @@
 # them -- and it fails on its own, so a red here names the bar and nothing else.
 #
 # ONE IMPLEMENTATION. The counter and the committed baseline live in
-# forge-lang (`scripts/raw-rust-bar.py`, `scripts/raw-rust-bar.baseline.json`)
-# and are checked out beside this repo rather than copied into it. Two trees
+# forge-lang, now forge/forge-lang in the monorepo (`scripts/raw-rust-bar.py`,
+# `scripts/raw-rust-bar.baseline.json`), and are checked out beside this repo
+# rather than copied into it. Two trees
 # holding two copies of a bar can disagree, and then the number is an opinion.
 #
 # `--ref forge-crm=HEAD` is the point of the whole step: the count is read from
@@ -44,24 +45,26 @@ jobs:
     # public repo's workflow run on the box that runs the fleet's CI, which is
     # an org-wide posture change for one bar, and it is not this step's to
     # take. A hosted runner needs nothing this job does not already have:
-    # python3, git, and a token'd checkout of forge-lang.
+    # python3, git, and a token'd checkout of forge.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           path: forge-crm
           fetch-depth: 1
-      - name: Checkout forge-lang (the bar's one implementation)
+      # Only forge-lang/scripts: the bar is a python script and its baseline.
+      - name: Checkout forge (forge-lang carries the bar's one implementation)
         uses: actions/checkout@v4
         with:
-          repository: forge-run/forge-lang
-          path: forge-lang
+          repository: forge-run/forge
+          path: forge
           ref: main
           clean: true
+          sparse-checkout: forge-lang/scripts
           token: ${{ secrets.FORGE_CROSS_REPO_TOKEN }}
       - name: The raw-Rust bar for forge-crm
         run: |
-          python3 forge-lang/scripts/raw-rust-bar.py \
+          python3 forge/forge-lang/scripts/raw-rust-bar.py \
             --root "$GITHUB_WORKSPACE" \
             --ref forge-crm=HEAD \
             --only forge-crm \
